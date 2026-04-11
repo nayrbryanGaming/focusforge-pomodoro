@@ -1,0 +1,35 @@
+name: focusforge_pomodoro
+description: Forge Deep Focus. Build Unstoppable Productivity.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # State Management
+  flutter_riverpod: ^2.5.1
+  # UI & Styling
+  cupertino_icons: ^1.0.6
+  google_fonts: ^6.1.0
+  # Backend
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
+  cloud_firestore: ^4.13.6
+  # Utils
+  shared_preferences: ^2.2.2
+  intl: ^0.18.1
+  uuid: ^4.3.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
