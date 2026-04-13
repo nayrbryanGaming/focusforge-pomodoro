@@ -1,61 +1,81 @@
 import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Task {
+enum TaskCategory { work, study, personal, other }
+enum TaskPriority { low, medium, high }
+
+class TaskModel {
   final String id;
   final String title;
   final int estimatedPomodoros;
   final int completedPomodoros;
   final bool isCompleted;
   final DateTime createdAt;
+  final TaskCategory category;
+  final TaskPriority priority;
 
-  Task({
+  TaskModel({
     String? id,
     required this.title,
     this.estimatedPomodoros = 1,
     this.completedPomodoros = 0,
     this.isCompleted = false,
     DateTime? createdAt,
+    this.category = TaskCategory.work,
+    this.priority = TaskPriority.medium,
   })  : id = id ?? const Uuid().v4(),
         createdAt = createdAt ?? DateTime.now();
 
-  Task copyWith({
+  TaskModel copyWith({
     String? id,
     String? title,
     int? estimatedPomodoros,
     int? completedPomodoros,
     bool? isCompleted,
     DateTime? createdAt,
+    TaskCategory? category,
+    TaskPriority? priority,
   }) {
-    return Task(
+    return TaskModel(
       id: id ?? this.id,
       title: title ?? this.title,
       estimatedPomodoros: estimatedPomodoros ?? this.estimatedPomodoros,
       completedPomodoros: completedPomodoros ?? this.completedPomodoros,
       isCompleted: isCompleted ?? this.isCompleted,
       createdAt: createdAt ?? this.createdAt,
+      category: category ?? this.category,
+      priority: priority ?? this.priority,
     );
   }
 
-  // Simplified to Map for Local/Firebase usage
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFirestore() {
     return {
-      'id': id,
       'title': title,
       'estimatedPomodoros': estimatedPomodoros,
       'completedPomodoros': completedPomodoros,
-      'isCompleted': isCompleted,
-      'createdAt': createdAt.toIso8601String(),
+      'completed': isCompleted,
+      'createdAt': Timestamp.fromDate(createdAt),
+      'category': category.name,
+      'priority': priority.name,
     };
   }
 
-  factory Task.fromMap(Map<String, dynamic> map) {
-    return Task(
-      id: map['id'],
-      title: map['title'],
-      estimatedPomodoros: map['estimatedPomodoros'],
-      completedPomodoros: map['completedPomodoros'],
-      isCompleted: map['isCompleted'],
-      createdAt: DateTime.parse(map['createdAt']),
+  factory TaskModel.fromFirestore(Map<String, dynamic> map, String id) {
+    return TaskModel(
+      id: id,
+      title: map['title'] ?? '',
+      estimatedPomodoros: map['estimatedPomodoros'] ?? 1,
+      completedPomodoros: map['completedPomodoros'] ?? 0,
+      isCompleted: map['completed'] ?? false,
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      category: TaskCategory.values.firstWhere(
+        (e) => e.name == map['category'],
+        orElse: () => TaskCategory.work,
+      ),
+      priority: TaskPriority.values.firstWhere(
+        (e) => e.name == map['priority'],
+        orElse: () => TaskPriority.medium,
+      ),
     );
   }
 }

@@ -247,7 +247,7 @@ stats/{userId}
 
 ## 🗺️ Roadmap
 
-### v1.0 — Launch (Current)
+### v1.0 — Launch (Completed)
 - [x] Pomodoro timer with customization
 - [x] Task management
 - [x] Firebase sync
@@ -255,7 +255,21 @@ stats/{userId}
 - [x] Streak tracking
 - [x] Achievement badges
 
-### v1.5 — Growth
+### v2.0 — Ultimate Polish (Completed)
+- [x] Beautiful Onboarding Flow
+- [x] Immersive Concentration Mode
+- [x] Custom Timer Heartbeat Pulse
+- [x] High-fidelity settings management
+- [x] Task session history & details screen
+
+### v3.0 — Elite UX (Current)
+- [x] Dynamic animated theme transitions
+- [x] "Live Forge" active user counts
+- [x] Confetti celebrations
+- [x] Advanced task categorization
+- [x] Category filtering and progress tracking
+
+### v4.0 — Growth
 - [ ] Widget support (Android home screen)
 - [ ] Apple Watch / Wear OS companion
 - [ ] CSV export for productivity data

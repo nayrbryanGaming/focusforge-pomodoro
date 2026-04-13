@@ -1,0 +1,7 @@
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/forge_logo.png"
+  adaptive_icon_background: "#0F172A"
+  adaptive_icon_foreground: "assets/icons/forge_logo_foreground.png"
+  min_sdk_android: 21
