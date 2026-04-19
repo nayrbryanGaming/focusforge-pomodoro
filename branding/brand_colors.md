@@ -1,34 +1,22 @@
-# FocusForge Brand Guidelines
+# FocusForge Brand Identity - Colors
 
-## 🎨 Color Palette
+Our palette represents the "Forge" concept: heat, steel, and focus.
 
-The FocusForge color palette represents deep focus (Navy), energetic action (Orange), and rewarding progress (Yellow).
+## Primary Colors
+- **Flame Orange**: `#FF6B35`
+  - Purpose: Calls to action, timer progress, energy.
+- **Dark Navy**: `#0F172A`
+  - Purpose: Primary background, stability, deep work atmosphere.
 
-### Primary Colors
+## Accent & Secondary
+- **Glowing Ember (Accent)**: `#FFD166`
+  - Purpose: Highlights, streaks, achievements.
+- **Steel Gray**: `#94A3B8`
+  - Purpose: Secondary text, icons, borders.
+- **Success Mint**: `#10B981`
+  - Purpose: Break sessions, completion states.
 
-*   **Primary Action**: Deep Orange
-    *   `HEX`: `#FF6B35`
-    *   `RGB`: `(255, 107, 53)`
-    *   `Usage`: Primary buttons, Timer active state, call to action.
-
-*   **Secondary/Background**: Dark Navy
-    *   `HEX`: `#0F172A`
-    *   `RGB`: `(15, 23, 42)`
-    *   `Usage`: App background (Dark mode default), header text, resting state.
-
-*   **Accent/Reward**: Soft Yellow
-    *   `HEX`: `#FFD166`
-    *   `RGB`: `(255, 209, 102)`
-    *   `Usage`: Achievement unlocked, secondary highlights, streaks, breaks.
-
-### Semantic Colors
-
-*   **Success**: `#10B981` (Emerald Green) - Task completion.
-*   **Error**: `#EF4444` (Red) - Destructive actions.
-*   **Surface**: `#1E293B` (Slate) - Cards, elevated elements.
-
-## 🔤 Typography
-
-*   **Headings**: `Outfit` or `Inter` (Sans-serif, geometric, clean)
-*   **Body**: `Inter` (Highly legible for small UI text)
-*   **Timer Display**: Monospaced font (e.g., `Roboto Mono` or `Space Mono`) to prevent jittering during countdown.
+## Usage Guidelines
+- Backgrounds should always use **Dark Navy**.
+- Buttons and interactive elements should lead with **Flame Orange**.
+- Use **Glowing Ember** sparingly for high-value alerts and gamification rewards.

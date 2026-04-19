@@ -46,12 +46,18 @@ class SettingsService extends StateNotifier<SettingsState> {
     await _prefs.setBool(_isPowerSavingModeKey, enabled);
     state = state.copyWith(isPowerSavingMode: enabled);
   }
+
+  Future<void> setSessionsBeforeLongBreak(int sessions) async {
+    await _prefs.setInt(_sessionsBeforeLongBreakKey, sessions);
+    state = state.copyWith(sessionsBeforeLongBreak: sessions);
+  }
 }
 
 class SettingsState {
   final int focusDuration;
   final int shortBreakDuration;
   final int longBreakDuration;
+  final int sessionsBeforeLongBreak;
   final bool isSoundEnabled;
   final bool isHapticEnabled;
   final bool isPowerSavingMode;
@@ -60,6 +66,7 @@ class SettingsState {
     required this.focusDuration,
     required this.shortBreakDuration,
     required this.longBreakDuration,
+    required this.sessionsBeforeLongBreak,
     required this.isSoundEnabled,
     required this.isHapticEnabled,
     required this.isPowerSavingMode,
@@ -70,6 +77,7 @@ class SettingsState {
       focusDuration: prefs.getInt('focus_duration') ?? 25,
       shortBreakDuration: prefs.getInt('short_break_duration') ?? 5,
       longBreakDuration: prefs.getInt('long_break_duration') ?? 15,
+      sessionsBeforeLongBreak: prefs.getInt('sessions_before_long_break') ?? 4,
       isSoundEnabled: prefs.getBool('is_sound_enabled') ?? true,
       isHapticEnabled: prefs.getBool('is_haptic_enabled') ?? true,
       isPowerSavingMode: prefs.getBool('is_power_saving_mode') ?? false,
@@ -80,6 +88,7 @@ class SettingsState {
     int? focusDuration,
     int? shortBreakDuration,
     int? longBreakDuration,
+    int? sessionsBeforeLongBreak,
     bool? isSoundEnabled,
     bool? isHapticEnabled,
     bool? isPowerSavingMode,
@@ -88,12 +97,14 @@ class SettingsState {
       focusDuration: focusDuration ?? this.focusDuration,
       shortBreakDuration: shortBreakDuration ?? this.shortBreakDuration,
       longBreakDuration: longBreakDuration ?? this.longBreakDuration,
+      sessionsBeforeLongBreak: sessionsBeforeLongBreak ?? this.sessionsBeforeLongBreak,
       isSoundEnabled: isSoundEnabled ?? this.isSoundEnabled,
       isHapticEnabled: isHapticEnabled ?? this.isHapticEnabled,
       isPowerSavingMode: isPowerSavingMode ?? this.isPowerSavingMode,
     );
   }
 }
+
 
 final settingsServiceProvider = StateNotifierProvider<SettingsService, SettingsState>((ref) {
   throw UnimplementedError('Initialize with SharedPreferences in main.dart');

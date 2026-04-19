@@ -4,36 +4,42 @@ class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> purgeUserData(String userId) async {
-    final batch = _firestore.batch();
+    // 1. Delete user & stats documents
+    await _firestore.collection('users').doc(userId).delete();
+    await _firestore.collection('stats').doc(userId).delete();
 
-    // 1. Delete user document
-    batch.delete(_firestore.collection('users').doc(userId));
+    // 2. Delete tasks and sessions safely in chunks to avoid 500 limit
+    await _deleteCollectionSafely('tasks', userId);
+    await _deleteCollectionSafely('sessions', userId);
+  }
 
-    // 2. Delete stats document
-    batch.delete(_firestore.collection('stats').doc(userId));
+  Future<void> _deleteCollectionSafely(String collection, String userId) async {
+    var snapshot = await _firestore.collection(collection).where('userId', isEqualTo: userId).get();
+    var batches = <WriteBatch>[];
+    
+    var currentBatch = _firestore.batch();
+    var operationCount = 0;
 
-    // 3. Delete tasks (Simple way: query and delete, but limited by batch size)
-    // For a production app with many tasks, we'd use a Cloud Function or Extension.
-    // Here we'll do a basic cleanup for standard usage.
-    final tasks = await _firestore
-        .collection('tasks')
-        .where('userId', isEqualTo: userId)
-        .get();
-    for (var doc in tasks.docs) {
-      batch.delete(doc.reference);
+    for (var doc in snapshot.docs) {
+      currentBatch.delete(doc.reference);
+      operationCount++;
+      
+      if (operationCount >= 400) {
+        batches.add(currentBatch);
+        currentBatch = _firestore.batch();
+        operationCount = 0;
+      }
+    }
+    
+    if (operationCount > 0) {
+      batches.add(currentBatch);
     }
 
-    // 4. Delete sessions
-    final sessions = await _firestore
-        .collection('sessions')
-        .where('userId', isEqualTo: userId)
-        .get();
-    for (var doc in sessions.docs) {
-      batch.delete(doc.reference);
+    for (var batch in batches) {
+      await batch.commit();
     }
-
-    await batch.commit();
   }
 }
+
 
 final firestoreService = FirestoreService();

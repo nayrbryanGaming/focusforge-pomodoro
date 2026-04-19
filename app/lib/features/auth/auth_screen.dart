@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/constants/app_colors.dart';
+import '../profile/policy_viewer.dart';
 import '../../main.dart';
+
 
 class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
@@ -134,7 +137,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                         borderRadius: BorderRadius.circular(26),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.4),
+                            color: AppColors.primary.withValues(alpha: 0.4),
                             blurRadius: 32,
                             offset: const Offset(0, 12),
                           ),
@@ -179,14 +182,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       labelText: 'Email Address',
                       prefixIcon: const Icon(Icons.email_outlined, color: AppColors.textSecondary),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.05),
+                      fillColor: Colors.white.withValues(alpha: 0.05),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -216,14 +219,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                         onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                       ),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.05),
+                      fillColor: Colors.white.withValues(alpha: 0.05),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -263,12 +266,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       onPressed: _isLoading ? null : _submit,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
-                        disabledBackgroundColor: AppColors.primary.withOpacity(0.4),
+                        disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                         elevation: 8,
-                        shadowColor: AppColors.primary.withOpacity(0.4),
+                        shadowColor: AppColors.primary.withValues(alpha: 0.4),
                       ),
                       child: _isLoading
                           ? const SizedBox(
@@ -324,15 +327,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   delay: const Duration(milliseconds: 600),
                   child: Row(
                     children: [
-                      Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
+                      Expanded(child: Divider(color: Colors.white.withValues(alpha: 0.1))),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           'or',
-                          style: TextStyle(color: Colors.white.withOpacity(0.3), fontSize: 13),
+                          style: TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 13),
                         ),
                       ),
-                      Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
+                      Expanded(child: Divider(color: Colors.white.withValues(alpha: 0.1))),
                     ],
                   ),
                 ),
@@ -366,7 +369,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                         ),
                       ),
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.white.withOpacity(0.15)),
+                        side: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -380,15 +383,62 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 // Privacy notice
                 FadeInUp(
                   delay: const Duration(milliseconds: 800),
-                  child: Text(
-                    'By continuing, you agree to our Terms of Service and Privacy Policy.',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.2),
-                      fontSize: 11,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.3),
+                          fontSize: 11,
+                          height: 1.4,
+                        ),
+                        children: [
+                          const TextSpan(text: 'By continuing, you agree to our '),
+                          TextSpan(
+                            text: 'Terms of Service',
+                            style: const TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const PolicyViewer(
+                                        title: 'Terms of Service',
+                                        filePath: 'legal/terms_of_service.md',
+                                      ),
+                                    ),
+                                  ),
+                          ),
+                          const TextSpan(text: ' and '),
+                          TextSpan(
+                            text: 'Privacy Policy',
+                            style: const TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const PolicyViewer(
+                                        title: 'Privacy Policy',
+                                        filePath: 'legal/privacy_policy.md',
+                                      ),
+                                    ),
+                                  ),
+                          ),
+                          const TextSpan(text: '.'),
+                        ],
+                      ),
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
+
               ],
             ),
           ),

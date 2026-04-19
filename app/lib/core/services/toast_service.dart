@@ -25,7 +25,7 @@ class ToastService {
             Expanded(child: Text(message, style: const TextStyle(color: Colors.white))),
           ],
         ),
-        backgroundColor: backgroundColor.withOpacity(0.9),
+        backgroundColor: backgroundColor.withValues(alpha: 0.9),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),

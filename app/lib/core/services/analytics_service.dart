@@ -1,12 +1,12 @@
-// import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 
 class AnalyticsService {
-  // final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
+  final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
 
   Future<void> logEvent(String name, {Map<String, dynamic>? parameters}) async {
-    debugPrint('📊 Analytics Event: $name | Params: $parameters');
-    // await _analytics.logEvent(name: name, parameters: parameters);
+    if (kDebugMode) debugPrint('📊 Analytics Event: $name | Params: $parameters');
+    await _analytics.logEvent(name: name, parameters: parameters);
   }
 
   Future<void> logSessionStarted(int duration) async {

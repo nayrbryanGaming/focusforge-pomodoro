@@ -7,8 +7,9 @@ import '../core/services/alarm_service.dart';
 import '../core/services/stats_service.dart';
 import '../core/services/task_service.dart';
 import '../core/services/settings_service.dart';
-import '../models/task_model.dart';
+// Removed unused task_model import
 import '../core/theme/app_theme.dart';
+import '../core/services/review_service.dart';
 
 enum TimerMode { focus, shortBreak, longBreak }
 
@@ -47,6 +48,7 @@ class TimerState {
 
 class TimerNotifier extends Notifier<TimerState> {
   Timer? _timer;
+  DateTime? _endTime;
 
   int get _focusDuration {
     try {
@@ -91,34 +93,89 @@ class TimerNotifier extends Notifier<TimerState> {
   }
 
   void toggleTimer() {
+    final ns = ref.read(notificationServiceProvider);
+
     if (state.isRunning) {
-      _timer?.cancel();
-      state = state.copyWith(isRunning: false);
+      _stopTimer();
+      ns.cancelAll();
     } else {
-      state = state.copyWith(isRunning: true);
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (state.remainingSeconds > 0) {
-          state = state.copyWith(remainingSeconds: state.remainingSeconds - 1);
-        } else {
-          _handleTimerComplete();
-        }
-      });
+      _startTimer();
+      
+      // Schedule background notification
+      final isFocus = state.mode == TimerMode.focus;
+      final title = isFocus ? '🔥 Focus Complete!' : '⚡ Break Over!';
+      final body = isFocus
+          ? 'Outstanding work! Time for a well-deserved break.'
+          : 'Recharged! Back to the forge, champion.';
+      
+      ns.scheduleNotification(
+        100, 
+        title, 
+        body, 
+        _endTime!,
+      );
+    }
+  }
+
+  void _startTimer() {
+    _endTime = DateTime.now().add(Duration(seconds: state.remainingSeconds));
+    state = state.copyWith(isRunning: true);
+    
+    _timer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
+      _tick();
+    });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+    _endTime = null;
+    state = state.copyWith(isRunning: false);
+  }
+
+  void syncOnResume() {
+    if (!state.isRunning || _endTime == null) return;
+
+    final now = DateTime.now();
+    final diff = _endTime!.difference(now).inSeconds;
+
+    if (diff <= 0) {
+      state = state.copyWith(remainingSeconds: 0);
+      _handleTimerComplete();
+    } else {
+      state = state.copyWith(remainingSeconds: diff);
+    }
+  }
+
+  void _tick() {
+    if (_endTime == null) return;
+    
+    final now = DateTime.now();
+    final diff = _endTime!.difference(now).inSeconds;
+    
+    if (diff <= 0) {
+      state = state.copyWith(remainingSeconds: 0);
+      _handleTimerComplete();
+    } else {
+      if (state.remainingSeconds != diff) {
+        state = state.copyWith(remainingSeconds: diff);
+      }
     }
   }
 
   void resetTimer() {
-    _timer?.cancel();
+    _stopTimer();
+    ref.read(notificationServiceProvider).cancelAll();
     state = state.copyWith(isRunning: false, remainingSeconds: _durationForMode(state.mode));
   }
 
   void switchMode(TimerMode newMode) {
-    _timer?.cancel();
+    _stopTimer();
+    ref.read(notificationServiceProvider).cancelAll();
     state = state.copyWith(
       isRunning: false,
       mode: newMode,
       remainingSeconds: _durationForMode(newMode),
     );
-    // Sync theme to the new mode
     _syncTheme(newMode);
   }
 
@@ -126,9 +183,9 @@ class TimerNotifier extends Notifier<TimerState> {
     state = state.copyWith(activeTaskId: taskId, clearActiveTask: taskId == null);
   }
 
-  /// Skip the current session and advance to the next mode
   void skipSession() {
-    _timer?.cancel();
+    _stopTimer();
+    ref.read(notificationServiceProvider).cancelAll();
     if (state.mode == TimerMode.focus) {
       final newCount = state.pomodoroCount + 1;
       final nextMode = (newCount % _sessionsUntilLong == 0)
@@ -170,7 +227,7 @@ class TimerNotifier extends Notifier<TimerState> {
   }
 
   Future<void> _handleTimerComplete() async {
-    _timer?.cancel();
+    _stopTimer();
 
     final bool isFocus = state.mode == TimerMode.focus;
     final String title = isFocus ? '🔥 Focus Complete!' : '⚡ Break Over!';
@@ -178,17 +235,15 @@ class TimerNotifier extends Notifier<TimerState> {
         ? 'Outstanding work! Time for a well-deserved break.'
         : 'Recharged! Back to the forge, champion.';
 
-    // 1. Haptic + Audio feedback
     HapticFeedback.heavyImpact();
-    await notificationServiceProvider.showSessionCompleteNotification(title, body);
-    await alarmServiceProvider.playBell();
+    // Immediate notification as well in case app is foreground
+    await ref.read(notificationServiceProvider).showSessionCompleteNotification(title, body);
+    await ref.read(alarmServiceProvider).playBell();
 
     if (isFocus) {
-      // 2. Update stats
       try {
         await ref.read(statsServiceProvider).updateFocusTime(_focusDuration);
         
-        // Update task progress if a task is active
         final activeTaskId = state.activeTaskId;
         if (activeTaskId != null) {
           final tasks = await ref.read(tasksStreamProvider.future);
@@ -197,11 +252,11 @@ class TimerNotifier extends Notifier<TimerState> {
             task.copyWith(completedPomodoros: task.completedPomodoros + 1),
           );
         }
+        await ref.read(reviewServiceProvider).incrementSessionAndCheck();
       } catch (e) {
-        debugPrint('Error updating stats/task: $e');
+        if (kDebugMode) debugPrint('Error updating stats/task: $e');
       }
 
-      // 3. Cycle to next mode and sync theme
       int newCount = state.pomodoroCount + 1;
       TimerMode nextMode = (newCount % _sessionsUntilLong == 0)
           ? TimerMode.longBreak

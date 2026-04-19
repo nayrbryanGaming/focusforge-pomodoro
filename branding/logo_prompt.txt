@@ -1,1 +1,3 @@
-A minimalist, modern iOS app icon logo for a productivity app named "FocusForge". The design should combine three subtle elements: a classic Pomodoro tomato, a stylized flame/forge symbol, and a digital timer. Use a sleek dark navy blue (#0F172A) background with deep energetic orange (#FF6B35) and soft yellow (#FFD166) vector graphics. The style is flat, corporate startup, highly legible, vector art, Dribbble style, no text, clean edges, gradient shading.
+FocusForge Logo Prompt:
+
+"A minimalist, high-end app icon for a productivity app named FocusForge. The design features a stylized orange tomato (Pomodoro) morphing into a glowing flame/forge symbol. The shape is sleek and geometric. The background is a deep navy blue rounded square with a subtle glassmorphism effect. Premium Material 3 aesthetic, vibrant orange (#FF6B35) and soft yellow (#FFD166) gradients, professional, high contrast, 4k, vector style."

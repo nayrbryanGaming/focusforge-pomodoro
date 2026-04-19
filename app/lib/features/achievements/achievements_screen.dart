@@ -32,7 +32,7 @@ class AchievementsScreen extends ConsumerWidget {
               width: 300,
               height: 300,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: BackdropFilter(
@@ -82,97 +82,139 @@ class _AchievementCard extends ConsumerWidget {
     return GestureDetector(
       onTap: () {
         if (isUnlocked) {
+          HapticFeedback.mediumImpact();
           ref.read(confettiServiceProvider).play();
         }
       },
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              color: isUnlocked 
-                  ? AppColors.surface.withOpacity(0.8) 
-                  : AppColors.surface.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: isUnlocked ? [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.15),
+              blurRadius: 20,
+              spreadRadius: 2,
+              offset: const Offset(0, 10),
+            )
+          ] : [],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              decoration: BoxDecoration(
                 color: isUnlocked 
-                    ? AppColors.primary.withOpacity(0.5) 
-                    : AppColors.surfaceHighlight.withOpacity(0.1),
-                width: 1.5,
+                    ? AppColors.surface.withValues(alpha: 0.9) 
+                    : AppColors.surface.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(28),
+                border: Border.all(
+                  color: isUnlocked 
+                      ? AppColors.primary.withValues(alpha: 0.4) 
+                      : Colors.white.withValues(alpha: 0.05),
+                  width: 1.5,
+                ),
+                gradient: isUnlocked ? LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.primary.withValues(alpha: 0.1),
+                    Colors.transparent,
+                  ],
+                ) : null,
               ),
-              boxShadow: isUnlocked ? [
-                BoxShadow(
-                  color: AppColors.primary.withOpacity(0.1),
-                  blurRadius: 20,
-                  spreadRadius: 2,
-                )
-              ] : [],
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Icon with optional glow
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      if (isUnlocked)
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Icon with premium pulse
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        if (isUnlocked)
+                          Container(
+                            width: 70,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                          ).animate(onPlay: (c) => c.repeat()).scale(
+                            duration: const Duration(seconds: 3),
+                            begin: const Offset(0.8, 0.8),
+                            end: const Offset(1.6, 1.6),
+                          ).fadeOut(),
+                        
+                        // Main Badge Icon
                         Container(
-                          width: 60,
-                          height: 60,
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.25),
                             shape: BoxShape.circle,
+                            color: isUnlocked 
+                                ? AppColors.primary.withValues(alpha: 0.1)
+                                : Colors.white.withValues(alpha: 0.03),
                           ),
-                        ).animate(onPlay: (c) => c.repeat()).scale(
-                          duration: const Duration(seconds: 2),
-                          begin: const Offset(1, 1),
-                          end: const Offset(1.5, 1.5),
-                        ).fadeOut(),
-                      Text(
-                        achievement.icon,
-                        style: TextStyle(
-                          fontSize: 44,
-                          color: isUnlocked ? null : Colors.white.withOpacity(0.1),
+                          child: Text(
+                            achievement.icon,
+                            style: TextStyle(
+                              fontSize: 48,
+                              color: isUnlocked ? null : Colors.white.withValues(alpha: 0.05),
+                              shadows: isUnlocked ? [
+                                Shadow(
+                                  color: AppColors.primary.withValues(alpha: 0.5),
+                                  blurRadius: 10,
+                                )
+                              ] : [],
+                            ),
+                          ),
                         ),
+                        
+                        if (!isUnlocked)
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Icon(Icons.lock_rounded, size: 18, color: Colors.white.withValues(alpha: 0.15)),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    Text(
+                      achievement.title,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.black,
+                        fontSize: 15,
+                        color: isUnlocked ? Colors.white : Colors.white.withValues(alpha: 0.2),
+                        letterSpacing: 0.2,
                       ),
-                      if (!isUnlocked)
-                        Icon(Icons.lock, size: 20, color: Colors.white.withOpacity(0.2)),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    achievement.title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: isUnlocked ? Colors.white : Colors.white.withOpacity(0.3),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    achievement.description,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: isUnlocked ? AppColors.textSecondary : Colors.white.withOpacity(0.2),
+                    const SizedBox(height: 8),
+                    Text(
+                      achievement.description,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 11,
+                        height: 1.4,
+                        fontWeight: FontWeight.w500,
+                        color: isUnlocked ? AppColors.textSecondary : Colors.white.withValues(alpha: 0.1),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  // Progress Bar for locked ones
-                  if (!isUnlocked)
-                    _buildProgressBar(achievement.progress, achievement.targetValue),
-                ],
-              ),
+                    const SizedBox(height: 16),
+                    // Progress Bar
+                    _buildProgressBar(achievement.progress, achievement.targetValue, isUnlocked),
+                  ],
+                ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildProgressBar(double current, double target) {
+  Widget _buildProgressBar(double current, double target, bool isUnlocked) {
     double percent = (current / target).clamp(0.0, 1.0);
     return Column(
       children: [
@@ -180,9 +222,9 @@ class _AchievementCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: percent,
-            backgroundColor: Colors.white.withOpacity(0.05),
+            backgroundColor: Colors.white.withValues(alpha: 0.05),
             valueColor: AlwaysStoppedAnimation<Color>(
-              AppColors.primary.withOpacity(0.35),
+              AppColors.primary.withValues(alpha: isUnlocked ? 0.6 : 0.2),
             ),
             minHeight: 4,
           ),
@@ -192,7 +234,7 @@ class _AchievementCard extends ConsumerWidget {
           '${(percent * 100).toInt()}%',
           style: TextStyle(
             fontSize: 9, 
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             fontWeight: FontWeight.bold,
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:confetti/confetti.dart';
 import 'dart:math';
@@ -21,7 +22,7 @@ import 'core/services/l10n_service.dart';
 import 'core/services/review_service.dart';
 import 'core/services/auth_service.dart';
 import 'core/constants/app_colors.dart';
-import 'providers/timer_provider.dart';
+// Removed unused timer_provider import
 
 const String _kOnboardingDone = 'onboarding_complete_v2';
 
@@ -42,24 +43,23 @@ void main() async {
         return true;
       };
     }
-    debugPrint('✅ Firebase initialized successfully');
+    if (kDebugMode) debugPrint('✅ Firebase initialized successfully');
   } catch (e) {
-    // Allow app to run without Firebase in dev environment (no google-services.json yet)
-    debugPrint('⚠️ Firebase not initialized: $e');
+    if (kDebugMode) debugPrint('⚠️ Firebase not initialized: $e');
   }
 
   // Initialize Notification Service
   try {
     await notificationServiceProvider.init();
   } catch (e) {
-    debugPrint('⚠️ Notifications unavailable: $e');
+    if (kDebugMode) debugPrint('⚠️ Notifications unavailable: $e');
   }
 
   // Log app open event
   try {
     await analyticsService.logEvent('app_opened');
   } catch (e) {
-    debugPrint('Analytics log skipped: $e');
+    if (kDebugMode) debugPrint('Analytics log skipped: $e');
   }
 
   runApp(
@@ -178,46 +178,38 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
             index: _currentIndex,
             children: _screens,
           ),
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: theme.colorScheme.primary.withOpacity(0.2),
-                  width: 1,
-                ),
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: _currentIndex,
+            backgroundColor: AppColors.surface,
+            elevation: 0,
+            indicatorColor: theme.colorScheme.primary.withValues(alpha: 0.12),
+            onDestinationSelected: (index) {
+              setState(() => _currentIndex = index);
+              HapticFeedback.selectionClick();
+              analyticsService.logEvent('tab_switched', parameters: {'index': index});
+            },
+            destinations: [
+              NavigationDestination(
+                icon: const Icon(Icons.timer_outlined),
+                selectedIcon: const Icon(Icons.timer),
+                label: l10n.translate('timer'),
               ),
-            ),
-            child: NavigationBar(
-              selectedIndex: _currentIndex,
-              backgroundColor: AppColors.surface,
-              indicatorColor: theme.colorScheme.primary.withOpacity(0.15),
-              onDestinationSelected: (index) {
-                setState(() => _currentIndex = index);
-                analyticsService.logEvent('tab_switched', parameters: {'index': index});
-              },
-              destinations: [
-                NavigationDestination(
-                  icon: const Icon(Icons.timer_outlined),
-                  selectedIcon: const Icon(Icons.timer),
-                  label: l10n.translate('timer'),
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.task_alt_outlined),
-                  selectedIcon: const Icon(Icons.task_alt),
-                  label: l10n.translate('tasks'),
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.bar_chart_outlined),
-                  selectedIcon: const Icon(Icons.bar_chart),
-                  label: l10n.translate('stats'),
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.person_outline),
-                  selectedIcon: const Icon(Icons.person),
-                  label: l10n.translate('profile'),
-                ),
-              ],
-            ),
+              NavigationDestination(
+                icon: const Icon(Icons.task_alt_outlined),
+                selectedIcon: const Icon(Icons.task_alt),
+                label: l10n.translate('tasks'),
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.bar_chart_outlined),
+                selectedIcon: const Icon(Icons.bar_chart),
+                label: l10n.translate('stats'),
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.person_outline),
+                selectedIcon: const Icon(Icons.person),
+                label: l10n.translate('profile'),
+              ),
+            ],
           ),
         ),
 

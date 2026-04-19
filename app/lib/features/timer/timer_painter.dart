@@ -23,7 +23,7 @@ class TimerPainter extends CustomPainter {
 
     // Background track
     final backgroundPaint = Paint()
-      ..color = AppColors.surfaceHighlight.withOpacity(0.3)
+      ..color = AppColors.surfaceHighlight.withValues(alpha: 0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -33,9 +33,17 @@ class TimerPainter extends CustomPainter {
     // Color based on mode or provided dynamic color
     final baseColor = color ?? (mode == TimerMode.focus ? AppColors.primary : AppColors.success);
     
-    // Progress arc
+    // Progress arc with Gradient
     final progressPaint = Paint()
-      ..color = baseColor
+      ..shader = SweepGradient(
+        colors: [
+          baseColor.withValues(alpha: 0.6),
+          baseColor,
+          baseColor.withValues(alpha: 0.8),
+        ],
+        stops: const [0.0, 0.5, 1.0],
+        transform: GradientRotation(-pi / 2),
+      ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -49,13 +57,13 @@ class TimerPainter extends CustomPainter {
       progressPaint,
     );
 
-    // Dynamic Pulsing Glow
+    // Dynamic Pulsing Glow (Forge Heat Effect)
     if (pulse > 0) {
       final glowPaint = Paint()
-        ..color = baseColor.withOpacity(0.15 * pulse)
+        ..color = baseColor.withValues(alpha: 0.2 * pulse)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = strokeWidth + (12 * pulse)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
+        ..strokeWidth = strokeWidth + (20 * pulse)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 15 * pulse);
 
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius - strokeWidth / 2),
@@ -63,6 +71,21 @@ class TimerPainter extends CustomPainter {
         arcAngle,
         false,
         glowPaint,
+      );
+      
+      // Secondary core glow
+      final coreGlow = Paint()
+        ..color = Colors.white.withValues(alpha: 0.1 * pulse)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+        
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius - strokeWidth / 2),
+        -pi / 2,
+        arcAngle,
+        false,
+        coreGlow,
       );
     }
   }

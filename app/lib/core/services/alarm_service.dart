@@ -1,34 +1,21 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AlarmService {
-  final AudioPlayer _audioPlayer = AudioPlayer();
-
-  static const String _bellPath = 'assets/sounds/digital_bell.mp3';
-  static const String _gongPath = 'assets/sounds/calm_gong.mp3';
-
   Future<void> playBell() async {
-    await _play(_bellPath);
+    // Uses native system alert sound to ensure zero-dependency, crash-free playback
+    await SystemSound.play(SystemSoundType.alert);
   }
 
   Future<void> playGong() async {
-    await _play(_gongPath);
-  }
-
-  Future<void> _play(String assetPath) async {
-    try {
-      await _audioPlayer.play(AssetSource(assetPath));
-    } catch (e) {
-      print('Error playing sound: \$e');
-    }
+    await SystemSound.play(SystemSoundType.alert);
   }
 
   Future<void> stop() async {
-    await _audioPlayer.stop();
+    // Native system sounds are short; no manual stop required.
   }
 
-  void dispose() {
-    _audioPlayer.dispose();
-  }
+  void dispose() {}
 }
 
-final alarmServiceProvider = AlarmService();
+final alarmServiceProvider = Provider<AlarmService>((ref) => AlarmService());
