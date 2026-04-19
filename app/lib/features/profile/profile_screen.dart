@@ -170,7 +170,7 @@ class ProfileScreen extends ConsumerWidget {
               color: Colors.white,
             ),
           ),
-        ).animate().scale(duration: 600.ms, curve: Curves.backOut),
+        ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
         const SizedBox(height: 20),
         Text(
           name,

@@ -65,7 +65,7 @@ class AboutScreen extends StatelessWidget {
                               child: Icon(Icons.bolt_rounded, size: 64, color: Colors.white),
                             ),
                           ),
-                        ).animate().scale(duration: 800.ms, curve: Curves.backOut),
+                        ).animate().scale(duration: 800.ms, curve: Curves.easeOutBack),
                       ),
                       const SizedBox(height: 32),
                       const Text(
@@ -108,7 +108,7 @@ class AboutScreen extends StatelessWidget {
                       _buildMasterpieceCard(
                         title: 'CORE ARCHITECTURE',
                         content: 'Built on the Flutter 3.x stack with Riverpod state management and a clinical Clean Architecture foundation.',
-                        icon: Icons.Layers_rounded,
+                        icon: Icons.layers_rounded,
                       ).animate().fadeIn(delay: 400.ms).moveY(begin: 20, end: 0),
                       
                       const SizedBox(height: 20),

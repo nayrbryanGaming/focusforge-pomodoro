@@ -195,7 +195,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ),
                             )
                                 .animate()
-                                .scale(duration: 800.ms, curve: Curves.backOut)
+                                .scale(duration: 800.ms, curve: Curves.easeOutBack)
                                 .fadeIn(),
 
                             const SizedBox(height: 56),
