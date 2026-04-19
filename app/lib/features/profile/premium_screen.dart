@@ -38,7 +38,7 @@ class PremiumScreen extends ConsumerWidget {
                 shape: BoxShape.circle,
                 color: AppColors.primary.withValues(alpha: 0.1),
               ),
-            ).animate(onPlay: (c) => c.repeat()).blur(begin: 100, end: 120),
+            ).animate(onPlay: (c) => c.repeat()).blur(begin: const Offset(10, 10), end: const Offset(15, 15)),
           ),
 
           CustomScrollView(

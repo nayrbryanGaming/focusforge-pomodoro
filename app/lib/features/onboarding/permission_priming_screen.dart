@@ -5,21 +5,21 @@ import '../../core/services/notification_service.dart';
 import '../../main.dart';
 import 'package:animate_do/animate_do.dart';
 
-class PermissionPrimingScreen extends StatefulWidget {
+class PermissionPrimingScreen extends ConsumerStatefulWidget {
   const PermissionPrimingScreen({super.key});
 
   @override
-  State<PermissionPrimingScreen> createState() => _PermissionPrimingScreenState();
+  ConsumerState<PermissionPrimingScreen> createState() => _PermissionPrimingScreenState();
 }
 
-class _PermissionPrimingScreenState extends State<PermissionPrimingScreen> {
+class _PermissionPrimingScreenState extends ConsumerState<PermissionPrimingScreen> {
   bool _isProcessing = false;
 
   Future<void> _handlePermissions() async {
     setState(() => _isProcessing = true);
     
     // Request notification permission
-    await notificationServiceProvider.requestPermissions();
+    await ref.read(notificationServiceProvider).requestPermissions();
     
     if (mounted) {
       Navigator.of(context).pushReplacement(
