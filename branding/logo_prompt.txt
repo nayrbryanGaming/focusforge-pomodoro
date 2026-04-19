@@ -1,3 +1,0 @@
-FocusForge Logo Prompt:
-
-"A minimalist, high-end app icon for a productivity app named FocusForge. The design features a stylized orange tomato (Pomodoro) morphing into a glowing flame/forge symbol. The shape is sleek and geometric. The background is a deep navy blue rounded square with a subtle glassmorphism effect. Premium Material 3 aesthetic, vibrant orange (#FF6B35) and soft yellow (#FFD166) gradients, professional, high contrast, 4k, vector style."
