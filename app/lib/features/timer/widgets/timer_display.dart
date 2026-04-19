@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import '../timer_painter.dart' as painter;
 import '../../../providers/timer_provider.dart';
+import '../../../core/services/settings_service.dart';
 
-class TimerDisplay extends StatelessWidget {
+class TimerDisplay extends ConsumerWidget {
   final int remainingSeconds;
   final TimerMode mode;
   final bool isRunning;
@@ -30,12 +32,11 @@ class TimerDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final timerState = ref.watch(timerProvider);
     
     // Calculate progress based on dynamic durations from settings
     final int totalSeconds;
-    final settings = ref.read(settingsServiceProvider);
-    switch (timerState.mode) {
+    final settings = ref.watch(settingsServiceProvider);
+    switch (mode) {
       case TimerMode.focus: totalSeconds = settings.focusDuration * 60; break;
       case TimerMode.shortBreak: totalSeconds = settings.shortBreakDuration * 60; break;
       case TimerMode.longBreak: totalSeconds = settings.longBreakDuration * 60; break;
@@ -56,9 +57,9 @@ class TimerDisplay extends StatelessWidget {
             child: CustomPaint(
               painter: painter.TimerPainter(
                 progress: progress,
-                mode: timerState.mode == TimerMode.focus
+                mode: mode == TimerMode.focus
                     ? painter.TimerMode.focus
-                    : painter.TimerMode.shortBreak,
+                    : (mode == TimerMode.shortBreak ? painter.TimerMode.shortBreak : painter.TimerMode.longBreak),
                 pulse: isRunning ? pulseValue : 0,
                 color: baseColor,
               ),

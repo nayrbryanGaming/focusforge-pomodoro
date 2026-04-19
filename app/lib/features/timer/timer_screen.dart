@@ -9,17 +9,14 @@ import 'dart:math';
 import '../../providers/timer_provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/community_service.dart';
-import '../../core/services/ambiance_service.dart';
 import '../../core/services/task_service.dart';
 import '../../core/services/settings_service.dart';
 import '../../core/services/notification_service.dart';
-import '../../core/services/alarm_service.dart';
 
 import 'widgets/mode_selector.dart';
 import 'widgets/timer_display.dart';
 import 'widgets/timer_controls.dart';
 import 'widgets/task_picker_sheet.dart';
-import 'widgets/ambiance_picker_overlay.dart';
 
 class TimerScreen extends ConsumerStatefulWidget {
   const TimerScreen({super.key});
@@ -32,7 +29,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _pulseController;
   bool _isConcentrationMode = false;
-  bool _showAmbiancePicker = false;
 
   @override
   void initState() {
@@ -73,7 +69,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     final theme = Theme.of(context);
     final isPowerSaving = ref.watch(settingsServiceProvider).isPowerSavingMode;
     final activeUsersAsync = ref.watch(activeUsersCountProvider);
-    final currentAmbiance = ref.watch(ambianceServiceProvider);
     final tasksAsync = ref.watch(tasksStreamProvider);
     
     String? activeTaskTitle;
@@ -101,12 +96,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
               title: _buildForgeLogo(),
               centerTitle: true,
               actions: [
-                _buildActionButton(
-                  icon: currentAmbiance == AmbianceTrack.none ? Icons.music_off_outlined : Icons.music_note,
-                  color: currentAmbiance == AmbianceTrack.none ? null : AppColors.primary,
-                  tooltip: 'Focus Ambiance',
-                  onTap: () => setState(() => _showAmbiancePicker = !_showAmbiancePicker),
-                ),
                 _buildActionButton(
                   icon: Icons.fullscreen_outlined,
                   tooltip: 'Concentration Mode',
@@ -175,7 +164,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                       onReset: () {
                         HapticFeedback.mediumImpact();
                         timerNotifier.resetTimer();
-                        ref.read(ambianceServiceProvider.notifier).stop();
                       },
                       onSkip: () {
                         HapticFeedback.lightImpact();
@@ -189,9 +177,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                   const SizedBox(height: 12),
                 ],
               ),
-              
-              if (_showAmbiancePicker && !_isConcentrationMode)
-                AmbiancePickerOverlay(onClose: () => setState(() => _showAmbiancePicker = false)),
             ],
           ),
         ),
@@ -397,13 +382,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     }
 
     notifier.toggleTimer();
-    
-    // Resume ambiance if starting focus
-    if (!isRunning) {
-      ref.read(ambianceServiceProvider.notifier).resume();
-    } else {
-      ref.read(ambianceServiceProvider.notifier).pause();
-    }
   }
 
   Future<bool?> _showNotificationPrimingDialog() {

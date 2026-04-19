@@ -133,7 +133,7 @@ class PremiumScreen extends ConsumerWidget {
                       children: [
                         _buildPricingCard(
                           title: 'ANNUAL PASS',
-                          price: '$29.99 / year',
+                          price: r'$29.99 / year',
                           savings: 'SAVE 50%',
                           isPopular: true,
                           onTap: () => _handlePurchase(context, 'Annual'),
@@ -141,7 +141,7 @@ class PremiumScreen extends ConsumerWidget {
                         const SizedBox(height: 16),
                         _buildPricingCard(
                           title: 'MONTHLY ACCESS',
-                          price: '$4.99 / month',
+                          price: r'$4.99 / month',
                           onTap: () => _handlePurchase(context, 'Monthly'),
                         ),
                       ],
