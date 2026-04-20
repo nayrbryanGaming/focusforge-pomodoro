@@ -174,7 +174,7 @@ class ProfileScreen extends ConsumerWidget {
         const SizedBox(height: 20),
         Text(
           name,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.black, color: Colors.white),
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Colors.white),
         ),
         const SizedBox(height: 6),
         Container(
@@ -223,7 +223,7 @@ class ProfileScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('FORGE PRO', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.black, letterSpacing: 1)),
+                    Text('FORGE PRO', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: 1)),
                     Text('Cloud sync, custom sounds & detailed insights', style: TextStyle(color: Colors.white70, fontSize: 12)),
                   ],
                 ),

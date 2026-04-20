@@ -199,7 +199,7 @@ class StatsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.black, color: Colors.white)),
+        Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white)),
         Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, fontWeight: FontWeight.bold)),
       ],
     );
@@ -299,7 +299,7 @@ class StatsScreen extends ConsumerWidget {
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
                   return BarTooltipItem(
                     '${rod.toY.toStringAsFixed(1)}h',
-                    TextStyle(color: primaryColor, fontWeight: FontWeight.black, fontSize: 14),
+                    TextStyle(color: primaryColor, fontWeight: FontWeight.w900, fontSize: 14),
                   );
                 },
               ),
@@ -323,7 +323,7 @@ class StatsScreen extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w900,
-                          color: isToday ? primaryColor : AppColors.textTertiary,
+                          color: isToday ? primaryColor : AppColors.textSecondary,
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -392,7 +392,7 @@ class StatsScreen extends ConsumerWidget {
             value,
             style: const TextStyle(
               fontSize: 22,
-              fontWeight: FontWeight.black,
+              fontWeight: FontWeight.w900,
               color: Colors.white,
               letterSpacing: -0.5,
             ),

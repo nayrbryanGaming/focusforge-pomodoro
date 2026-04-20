@@ -354,7 +354,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
       ),
       child: Text(
         label,
-        style: const TextStyle(fontSize: 9, color: AppColors.textTertiary, fontWeight: FontWeight.w900, letterSpacing: 0.8),
+        style: const TextStyle(fontSize: 9, color: AppColors.textSecondary, fontWeight: FontWeight.w900, letterSpacing: 0.8),
       ),
     );
   }
