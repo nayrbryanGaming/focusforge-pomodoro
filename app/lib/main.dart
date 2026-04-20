@@ -49,8 +49,9 @@ void main() async {
   }
 
   // Initialize Notification Service
+  final container = ProviderContainer();
   try {
-    await notificationServiceProvider.init();
+    await container.read(notificationServiceProvider).init();
   } catch (e) {
     if (kDebugMode) debugPrint('⚠️ Notifications unavailable: $e');
   }
@@ -63,7 +64,8 @@ void main() async {
   }
 
   runApp(
-    ProviderScope(
+    UncontrolledProviderScope(
+      container: container,
       overrides: [
         settingsServiceProvider.overrideWith((ref) => SettingsService(prefs)),
         l10nServiceProvider.overrideWith((ref) => L10nService(prefs)),

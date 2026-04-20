@@ -183,7 +183,7 @@ class _AchievementCard extends ConsumerWidget {
                       achievement.title,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontWeight: FontWeight.black,
+                        fontWeight: FontWeight.w900,
                         fontSize: 15,
                         color: isUnlocked ? Colors.white : Colors.white.withValues(alpha: 0.2),
                         letterSpacing: 0.2,

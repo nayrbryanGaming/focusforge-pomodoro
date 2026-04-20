@@ -210,7 +210,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 p.title,
                                 style: const TextStyle(
                                   fontSize: 48,
-                                  fontWeight: FontWeight.black,
+                                  fontWeight: FontWeight.w900,
                                   color: Colors.white,
                                   height: 1.0,
                                   letterSpacing: -1.5,
