@@ -49,7 +49,13 @@ void main() async {
   }
 
   // Initialize Notification Service
-  final container = ProviderContainer();
+  final container = ProviderContainer(
+    overrides: [
+      settingsServiceProvider.overrideWith((ref) => SettingsService(prefs)),
+      l10nServiceProvider.overrideWith((ref) => L10nService(prefs)),
+      reviewServiceProvider.overrideWith((ref) => ReviewService(prefs)),
+    ],
+  );
   try {
     await container.read(notificationServiceProvider).init();
   } catch (e) {
@@ -66,11 +72,6 @@ void main() async {
   runApp(
     UncontrolledProviderScope(
       container: container,
-      overrides: [
-        settingsServiceProvider.overrideWith((ref) => SettingsService(prefs)),
-        l10nServiceProvider.overrideWith((ref) => L10nService(prefs)),
-        reviewServiceProvider.overrideWith((ref) => ReviewService(prefs)),
-      ],
       child: FocusForgeApp(prefs: prefs),
     ),
   );
