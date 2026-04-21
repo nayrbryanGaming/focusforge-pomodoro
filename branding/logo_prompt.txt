@@ -1,0 +1,7 @@
+FocusForge Logo Prompt:
+
+"Minimalist high-end app icon for a productivity app named 'FocusForge'. 
+The icon should feature a stylized fusion of a bright orange Pomodoro tomato (#FF6B35) and a sharp, modern flame symbol representing a forge. 
+The design should incorporate subtle circular lines representing a timer dial. 
+Background should be a deep navy blue (#0F172A). 
+Flat Material 3 style, clean lines, premium look, vector aesthetic, high contrast."
