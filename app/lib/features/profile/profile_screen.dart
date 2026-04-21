@@ -9,6 +9,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/toast_service.dart';
 import '../../features/auth/auth_screen.dart';
+import '../../core/constants/legal_docs.dart';
 import 'policy_viewer.dart';
 import 'settings_screen.dart';
 import 'premium_screen.dart';
@@ -64,17 +65,17 @@ class ProfileScreen extends ConsumerWidget {
               _ProfileTile(
                 icon: Icons.privacy_tip_outlined,
                 title: 'Privacy Policy',
-                onTap: () => _openPolicy(context, 'Privacy Policy', 'legal/privacy_policy.md'),
+                onTap: () => _openPolicy(context, 'Privacy Policy', LegalDocs.privacyPolicy),
               ),
               _ProfileTile(
                 icon: Icons.description_outlined,
                 title: 'Terms of Service',
-                onTap: () => _openPolicy(context, 'Terms of Service', 'legal/terms_of_service.md'),
+                onTap: () => _openPolicy(context, 'Terms of Service', LegalDocs.termsOfService),
               ),
               _ProfileTile(
                 icon: Icons.verified_user_outlined,
                 title: 'Data Usage Policy',
-                onTap: () => _openPolicy(context, 'Data Usage', 'legal/data_usage_policy.md'),
+                onTap: () => _openPolicy(context, 'Data Usage', LegalDocs.dataUsagePolicy),
               ),
             ]),
             const SizedBox(height: 24),
@@ -266,8 +267,8 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  void _openPolicy(BuildContext context, String title, String path) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => PolicyViewer(title: title, filePath: path)));
+  void _openPolicy(BuildContext context, String title, String contentData) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => PolicyViewer(title: title, contentData: contentData)));
   }
 
   Future<void> _sendSupportEmail() async {

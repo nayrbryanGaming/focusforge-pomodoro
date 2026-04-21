@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/legal_docs.dart';
 import '../profile/policy_viewer.dart';
 import '../../main.dart';
 
@@ -408,7 +409,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                     MaterialPageRoute(
                                       builder: (_) => const PolicyViewer(
                                         title: 'Terms of Service',
-                                        filePath: 'legal/terms_of_service.md',
+                                        contentData: LegalDocs.termsOfService,
                                       ),
                                     ),
                                   ),
@@ -427,7 +428,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                     MaterialPageRoute(
                                       builder: (_) => const PolicyViewer(
                                         title: 'Privacy Policy',
-                                        filePath: 'legal/privacy_policy.md',
+                                        contentData: LegalDocs.privacyPolicy,
                                       ),
                                     ),
                                   ),
