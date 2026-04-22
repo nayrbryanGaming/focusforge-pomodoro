@@ -80,7 +80,7 @@ class NotificationService {
       priority: Priority.high,
       showWhen: true,
       playSound: true,
-      fullScreenIntent: true,
+      fullScreenIntent: false,
     );
 
     const DarwinNotificationDetails darwinDetails = DarwinNotificationDetails();

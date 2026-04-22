@@ -1,27 +1,25 @@
 # Data Usage Policy
 
-**Last Updated: April 21, 2026**
+**Last Updated: April 22, 2026**
 
-This Data Usage Policy describes how FocusForge handles data in compliance with Google Play Store guidelines.
+This Data Usage Policy describes how FocusForge handles user data and ensures transparency in our data processing activities.
 
-## 1. Minimal Data Collection
-We follow the principle of data minimization. We only collect data that is strictly necessary for the core functionality of the app (timer sync, task management, and analytics).
+## 1. Data Collection Principles
+We adhere to the following principles:
+- **Data Minimization**: We only collect the data necessary for the app's core functions.
+- **Transparency**: We are clear about what we collect and why.
+- **Security**: We use industry-standard encryption and storage solutions.
 
-## 2. Encryption
-All user data transmitted between the FocusForge app and our servers (Firebase) is encrypted using industry-standard Transport Layer Security (TLS). Data stored in Cloud Firestore is encrypted at rest.
+## 2. Types of Data Processed
+- **Authentication Data**: Managed via Firebase Auth (email, UID).
+- **Productivity Data**: Focus session counts, durations, and task lists.
+- **Diagnostic Data**: Crash logs and performance metrics via Firebase Crashlytics.
 
 ## 3. Data Retention
-- **Active Accounts**: Data is retained as long as the account is active.
-- **Deleted Accounts**: Upon account deletion, all associated personal data is permanently removed from our active databases within 30 days.
+We retain your data as long as your account is active. If you delete your account, all associated personal data is purged from our production databases within 30 days.
 
-## 4. No Data Selling
-FocusForge does **NOT** sell, rent, or trade your personal data to any third parties for marketing or any other purposes.
+## 4. Third-Party Data Sharing
+We do NOT sell your personal data. Data is shared only with our infrastructure providers (Google Firebase) to provide the service.
 
-## 5. Service Providers
-We use Google Firebase as our primary infrastructure provider. Their data handling practices comply with major international standards (ISO/IEC 27001, SOC 1/2/3).
-
-## 6. Access and Control
-Users have full control over their data. You can view, edit, or delete your tasks and profile information directly within the app.
-
-## 7. Disclosure for Legal Reasons
-We may disclose information if required to do so by law or in the good faith belief that such action is necessary to comply with legal obligations or protect the safety of users.
+## 5. User Rights
+You have the right to access, export, or delete your data at any time via the in-app settings.

@@ -1,24 +1,25 @@
 # FocusForge Roadmap
 
-## Q2 2026: Hardening & Initial Launch
-- [x] Complete code audit and bug elimination.
-- [x] Implement full Play Store legal compliance docs.
-- [x] Stabilize Firebase infrastructure.
-- [x] 18th Submission for Google Play approval.
-- [ ] Product Hunt Launch.
+## Phase 1: Foundation (Completed)
+- [x] Core Pomodoro Engine
+- [x] Task Management System
+- [x] Firebase Integration (Auth/Firestore)
+- [x] Basic Analytics
 
-## Q3 2026: Growth & Features
-- [ ] Group Focus Sessions (Social Pomodoro).
-- [ ] Integration with Google Calendar & Apple Calendar.
-- [ ] FocusForge Pro: Premium ambient focus sounds.
-- [ ] Detailed exportable productivity reports (PDF/CSV).
+## Phase 2: Polish & Hardening (Current)
+- [x] Material 3 UI Overhaul
+- [x] Production-grade Error Handling
+- [x] Firebase Crashlytics & Analytics Setup
+- [x] Play Store Compliance (Legal/Permissions)
+- [x] Deep Focus "Concentration Mode"
 
-## Q4 2026: Ecosystem Expansion
-- [ ] Desktop App (Windows/macOS) using Flutter for Desktop.
-- [ ] Chrome Extension for browser-level focus enforcement.
-- [ ] Wear OS & watchOS companion apps for wrist-based timers.
+## Phase 3: Expansion (Upcoming)
+- [ ] **Forge Pass**: Premium subscription with custom sounds and themes.
+- [ ] **Forge Groups**: Shared focus sessions with real-time community boards.
+- [ ] **Cross-Platform Sync**: Web and Desktop clients using Flutter.
+- [ ] **AI Focus Insights**: ML-driven energy peak predictions.
 
-## Q1 2027: Enterprise & Teams
-- [ ] FocusForge for Teams: Collective productivity dashboards.
-- [ ] API access for external integrations.
-- [ ] Corporate wellness partnerships.
+## Phase 4: Ecosystem
+- [ ] API for 3rd party integrations (Notion, Trello).
+- [ ] WearOS and Apple Watch companion apps.
+- [ ] FocusForge Enterprise for high-performance teams.

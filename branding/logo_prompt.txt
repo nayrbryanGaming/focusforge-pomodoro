@@ -1,7 +1,6 @@
-FocusForge Logo Prompt:
+FOCUSFORGE LOGO DESIGN PROMPT
 
-"Minimalist high-end app icon for a productivity app named 'FocusForge'. 
-The icon should feature a stylized fusion of a bright orange Pomodoro tomato (#FF6B35) and a sharp, modern flame symbol representing a forge. 
-The design should incorporate subtle circular lines representing a timer dial. 
-Background should be a deep navy blue (#0F172A). 
-Flat Material 3 style, clean lines, premium look, vector aesthetic, high contrast."
+Concept: A minimalist app icon representing the "Forge" and "Focus" duality.
+
+Prompt: 
+"A premium app icon for a productivity app named FocusForge. The icon features a minimalist geometric tomato (Pomodoro) silhouette that subtly morphs into a glowing anvil or flame shape. Style: Modern 3D glassmorphism, matte finish with sharp metallic edges. Colors: Vibrant Deep Orange (#FF6B35) and Soft Solar Yellow (#FFD166) highlights against a deep midnight navy background. The design is clean, centered, and sophisticated, suggesting craftsmanship and cognitive power. High resolution, high detail, masterpiece quality."

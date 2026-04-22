@@ -5,10 +5,13 @@ class CommunityService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Stream<int> getActiveUsersCount() {
-    // Production-grade implementation using Firestore count aggregator.
-    // This is cost-efficient and reveals the real size of the FocusForge community.
+    // Optimized for production: 
+    // We only count users active in the last 15 minutes to represent "Active Now"
+    // This reduces snapshot size and is more representative of real-time community.
+    final fifteenMinutesAgo = DateTime.now().subtract(const Duration(minutes: 15));
     return _firestore
         .collection('users')
+        .where('last_active_at', isGreaterThan: fifteenMinutesAgo)
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
   }

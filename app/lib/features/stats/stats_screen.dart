@@ -149,9 +149,9 @@ class StatsScreen extends ConsumerWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Grandmaster Forge',
-                    style: TextStyle(
+                  Text(
+                    stats.level > 10 ? 'Grandmaster Forge' : 'Apprentice Forger',
+                    style: const TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.w900,
                       color: Colors.white,
@@ -160,7 +160,7 @@ class StatsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Rank: Mythic Vanguard',
+                    'Rank: ${stats.level > 20 ? 'Mythic Vanguard' : 'Focus Aspirant'}',
                     style: TextStyle(
                       color: theme.colorScheme.primary,
                       fontSize: 14,
@@ -187,7 +187,7 @@ class StatsScreen extends ConsumerWidget {
             children: [
               _buildSimpleStat('Sessions', stats.totalSessions.toString()),
               _buildSimpleStat('Completed', stats.completedTasks.toString()),
-              _buildSimpleStat('Global Rank', '#42'),
+              _buildSimpleStat('Forge Level', stats.level.toString()),
             ],
           ),
         ],

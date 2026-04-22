@@ -1,47 +1,55 @@
-# FocusForge API & Database Structure
+# FocusForge API & Services
 
-FocusForge uses the Firebase SDK for all backend interactions.
+## Overview
+FocusForge uses the Firebase SDK as its primary backend. This document outlines the core service methods and data schemas.
 
-## Firestore Collections
+## Services
 
-### `users`
-| Field | Type | Description |
-|-------|------|-------------|
-| `user_id` | String | Unique identifier (Firebase UID) |
-| `email` | String | User's email |
-| `created_at` | Timestamp | Account creation date |
-| `premium_status` | Boolean | Subscription status |
+### AuthService
+- `signInAnonymously()`: Standard entry for guests.
+- `signIn(email, password)`: Link anonymous account to email.
+- `signOut()`: Terminates session.
+- `deleteAccount()`: Purges user data and deletes auth record.
 
-### `tasks`
-| Field | Type | Description |
-|-------|------|-------------|
-| `task_id` | String | Unique task ID |
-| `user_id` | String | Owner ID |
-| `title` | String | Task description |
-| `completed` | Boolean | Completion status |
-| `created_at` | Timestamp | Creation date |
+### TaskService
+- `getTasks()`: Stream of `List<TaskModel>`.
+- `addTask(TaskModel)`: Adds a new task to Firestore.
+- `updateTask(TaskModel)`: Modifies existing task.
+- `deleteTask(id)`: Removes task record.
 
-### `sessions`
-| Field | Type | Description |
-|-------|------|-------------|
-| `session_id` | String | Unique session ID |
-| `user_id` | String | User ID |
-| `task_id` | String? | Associated task (optional) |
-| `duration` | Int | Seconds spent |
-| `type` | String | 'focus' or 'break' |
-| `completed` | Boolean | Finished vs. Interrupted |
-| `timestamp` | Timestamp | Session start time |
+### StatsService
+- `getStats()`: Stream of `StatsModel`.
+- `updateFocusTime(seconds)`: Increments focus time and triggers level updates.
+- `getFocusIntensity()`: Fetches 28-day activity heatmap data.
 
-### `stats`
-| Field | Type | Description |
-|-------|------|-------------|
-| `user_id` | String | User ID |
-| `total_focus_time` | Int | Total cumulative focus seconds |
-| `daily_streak` | Int | Consecutive focus days |
-| `weekly_focus_hours` | List<Double> | Focus duration for the last 7 days |
+## Firestore Schemas
 
-## Core Services (Dart)
-- `AuthService`: Handles sign-in, sign-up, and anonymous sessions.
-- `TaskService`: CRUD operations for tasks.
-- `TimerService`: Core logic for countdown and state transitions.
-- `StatsService`: Real-time analytics aggregation.
+### /tasks/{id}
+```json
+{
+  "userId": "string",
+  "title": "string",
+  "estimatedPomodoros": "int",
+  "completedPomodoros": "int",
+  "category": "string",
+  "priority": "string",
+  "isCompleted": "bool",
+  "createdAt": "timestamp"
+}
+```
+
+### /stats/{userId}
+```json
+{
+  "totalFocusTime": "int",
+  "totalPoints": "int",
+  "level": "int",
+  "dailyStreak": "int",
+  "completedSessions": "int"
+}
+```
+
+## Security
+- All read/write operations are protected by Firestore Security Rules.
+- Field-level validation ensures data integrity.
+- Firebase Crashlytics monitors API failures in production.

@@ -1,0 +1,41 @@
+# Flutter
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+app/build/
+
+# Android
+app/android/app/src/main/res/drawable-*/
+app/android/app/src/main/res/mipmap-*/
+app/android/.gradle/
+app/android/local.properties
+app/android/app/google-services.json
+
+# iOS
+app/ios/Pods/
+app/ios/Runner/GeneratedPluginRegistrant.h
+app/ios/Runner/GeneratedPluginRegistrant.m
+app/ios/Flutter/Generated.xcconfig
+app/ios/Flutter/flutter_export_environment.sh
+app/ios/ServiceDefinitions.json
+app/ios/Runner/GoogleService-Info.plist
+
+# Web
+node_modules/
+website/node_modules/
+website/.next/
+website/out/
+website/build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.DS_Store
+
+# Temporary
+*.log
+tmp/
