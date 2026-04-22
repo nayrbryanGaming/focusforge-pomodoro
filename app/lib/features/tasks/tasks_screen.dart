@@ -252,6 +252,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
               initialTitle: task.title,
               estimated: task.estimatedPomodoros,
               completed: task.completedPomodoros,
+              task: task,
             ),
           ),
         ),

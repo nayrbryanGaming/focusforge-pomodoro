@@ -117,7 +117,7 @@ class StatsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProgressOverview(ThemeData theme, dynamic stats) {
+  Widget _buildProgressOverview(ThemeData theme, StatsModel stats) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(32),
@@ -185,8 +185,8 @@ class StatsScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildSimpleStat('Sessions', stats.totalSessions.toString()),
-              _buildSimpleStat('Completed', stats.completedTasks.toString()),
+              _buildSimpleStat('Sessions', stats.completedSessions.toString()),
+              _buildSimpleStat('Tasks Done', stats.completedTasks.toString()),
               _buildSimpleStat('Forge Level', stats.level.toString()),
             ],
           ),

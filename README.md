@@ -1,114 +1,108 @@
-# FocusForge
+# FocusForge: The Deep Work Infrastructure
 
-### Forge Deep Focus. Build Unstoppable Productivity.
+[![FocusForge v1.3.1](https://img.shields.io/badge/FocusForge-v1.3.1--Hardened-orange?style=for-the-badge)](https://focusforge.app)
+[![Submission 18](https://img.shields.io/badge/Google%20Play-18th%20Submission-blue?style=for-the-badge)](https://play.google.com/store/apps/details?id=com.focusforge.pomodoro)
 
-[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
-[![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://firebase.google.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+> **Forge Deep Focus. Build Unstoppable Productivity.**
 
-FocusForge is a clinical-grade Pomodoro productivity application designed for builders, founders, and absolute focus athletes. It transmutes distractibility into unstoppable power through a refined focus habit system.
-
----
-
-## ⚔️ The Problem
-In the modern digital landscape, the "Deep Work" state is under constant siege by:
-- **Fractured Attention**: Digital distractions and notification floods.
-- **Cognitive Drift**: Procrastination cycles and lack of time management.
-- **Burnout**: Unstructured work blocks that deplete neurological resources.
-
-## ⚡ The Solution
-FocusForge isn't just a timer; it's a **Focus Infrastructure**. By combining mathematically optimized work-rest cycles with strategic task management and clinical analytics, we create a powerful productivity loop.
+FocusForge is a clinical-grade Pomodoro productivity application engineered for builders, founders, and absolute focus athletes. Built with Flutter and Firebase, it transmutes distractibility into a structured system of deep work, habit formation, and high-performance analytics.
 
 ---
 
-## 🛠️ Features
+## 🛠 Problem: The Cognitive Fragmentation
+Modern workers face a dual crisis:
+1.  **Digital Hyper-Distraction**: Constant pings erode the ability to enter "Flow State."
+2.  **Unstructured Entropy**: Without a system, work expands to fill available time (Parkinson’s Law), leading to burnout.
 
-### 1. The Forge (Pomodoro Timer)
-- **Deep Focus (25m)**: Optimized duration for cognitive entry into flow state.
-- **Short Break (5m)**: Rapid neurological recovery.
-- **Long Break (15m)**: Deep reset after 4 successful sessions.
-- **Concentration Mode**: Zero-distraction fullscreen interface.
+Existing tools are either too simplistic (basic timers) or visually outdated, failing to leverage Pavlovian triggers and neurological reward cycles.
 
-### 2. Task Ledger
-- Strategic task planning.
-- Priority weighting and session estimation.
-- Direct integration with focus sessions.
-
-### 3. Insight Dynamics (Analytics)
-- Weekly focus velocity graphs.
-- Session consistency tracking.
-- Productivity streak visualization.
-
-### 4. Forge Gamification
-- **Focus Streaks**: Maintain momentum to build habits.
-- **Productivity Points**: Quantify your output.
-- **Achievement Badges**: Milestone-based rewards for elite performance.
+## ⚔️ Solution: The Forge Protocol
+FocusForge is not just a timer; it is a **productivity operating system**. It combines:
+*   **Structured Focus Intervals**: Optimized 25/5 cycles with haptic and visual cues.
+*   **Task Weighting**: Prioritize tasks by "Forge Effort" rather than simple lists.
+*   **Insight Dynamics**: Clinical visualization of focus consistency via heatmaps.
+*   **Gamified Retention**: Streak tracking and "Forger Levels" to maintain momentum.
 
 ---
 
-## 🏗️ Architecture & Tech Stack
+## 🚀 Feature Set
+
+### 1. The Forge Timer
+*   **Material 3 Dynamic UI**: Adapts color based on focus/break state.
+*   **Concentration Mode**: Strips away all UI noise, leaving only the countdown.
+*   **Custom Protcols**: Tailor work/rest durations to your personal peak energy.
+
+### 2. Strategic Task Management
+*   **Session Estimation**: Assign "Forge Sessions" to tasks to visualize required effort.
+*   **Priority Heatmapping**: High-priority tasks glow with intensity.
+*   **Category Sorting**: Separate Work, Study, and Personal growth streams.
+
+### 3. Productivity Analytics
+*   **Focus Heatmap**: 28-day consistency grid (GitHub-style).
+*   **Intensity Charts**: Weekly focus hour distribution visualization.
+*   **Progression System**: Earn Forge Points and level up your productivity rank.
+
+### 4. Enterprise-Grade Core
+*   **Cloud Sync**: Secure Firebase authentication and real-time Firestore sync.
+*   **Offline First**: Works perfectly in high-focus environments without internet.
+*   **Policy Compliant**: Fully audited for Google Play Safety and Privacy standards.
+
+---
+
+## 🏗 Architecture & Tech Stack
 
 ### Frontend
-- **Framework**: Flutter (Stable)
-- **Language**: Dart
-- **State Management**: Riverpod (Reactive Architecture)
-- **Design**: Material 3 (Production-Grade Modern UI)
+*   **Flutter (Stable)**: High-performance cross-platform rendering.
+*   **Riverpod**: Compile-time safe state management.
+*   **Animate-Do**: Premium micro-animations for UX delight.
+*   **Material 3**: Modern, clean design language.
 
 ### Backend
-- **Platform**: Firebase
-- **Auth**: Firebase Authentication (Secure JWT)
-- **Database**: Cloud Firestore (Real-time NoSQL)
-- **Monitoring**: Firebase Analytics & Crashlytics
+*   **Firebase Auth**: Secure anonymous and email-based identity.
+*   **Cloud Firestore**: Real-time NoSQL data persistence.
+*   **Firebase Analytics**: User behavior tracking for product optimization.
+*   **Crashlytics**: Production-grade stability monitoring.
 
-### Architecture Pattern
-- **Clean Architecture**: Separated into Presentation, Domain, and Data layers.
-- **Design Pattern**: MVVM + Repository pattern for maximum testability and maintainability.
-
----
-
-## 🚀 Installation & Setup
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/nayrbryanGaming/focusforge-pomodoro.git
-   ```
-
-2. **Setup Firebase**:
-   - Create a project on the [Firebase Console](https://console.firebase.google.com/).
-   - Add an Android app with package name `com.focusforge.app`.
-   - Download `google-services.json` and place it in `app/android/app/`.
-
-3. **Install Dependencies**:
-   ```bash
-   cd app
-   flutter pub get
-   ```
-
-4. **Run Application**:
-   ```bash
-   flutter run
-   ```
+### Structure
+Built using **Clean Architecture** (Presentation/Domain/Data) and the **MVVM + Repository** pattern for maximum maintainability.
 
 ---
 
-## 🗺️ Roadmap
-- [x] Phase 1: Core Timer Engine
-- [x] Phase 2: Task Ledger Implementation
-- [x] Phase 3: Firebase Integration
-- [x] Phase 4: Production Hardening (Google Play Compliance)
-- [ ] Phase 5: Multi-Device Sync (Web & Desktop)
-- [ ] Phase 6: Team Focus Groups
+## 📦 Development Setup
 
-## ⚖️ Legal & Compliance
-FocusForge is fully compliant with Google Play Store Developer Policies.
-- [Privacy Policy](legal/privacy_policy.md)
-- [Terms of Service](legal/terms_of_service.md)
-- [Data Usage Policy](legal/data_usage_policy.md)
+### Prerequisites
+*   Flutter SDK `^3.19.0`
+*   Dart `^3.3.0`
+*   Firebase CLI (for backend modifications)
+
+### Installation
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/nayrbryanGaming/focusforge-pomodoro.git
+    ```
+2.  Install dependencies:
+    ```bash
+    flutter pub get
+    ```
+3.  Configure Firebase:
+    *   Place `google-services.json` in `app/android/app/`.
+    *   Place `GoogleService-Info.plist` in `app/ios/Runner/`.
+4.  Run the application:
+    ```bash
+    flutter run --release
+    ```
 
 ---
+
+## 🗺 Roadmap
+*   **Q3 2026**: "Forge Pass" — Premium custom themes and soundscapes.
+*   **Q4 2026**: "Forge Groups" — Real-time collaborative focus rooms.
+*   **Q1 2027**: WearOS & Apple Watch standalone clients.
+
+## 💰 Monetization Strategy
+*   **Freemium Model**: Core timer and basic tasks remain free forever.
+*   **Forge Pro ($4.99/mo)**: Advanced analytics, unlimited tasks, and cross-device cloud sync.
 
 ## 📜 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-**FocusForge Protocol** | *Transmute Procrastination into Power.*
+Copyright © 2026 FocusForge Protocol. All rights reserved.
+Developed for the 18th Google Play Submission Hardening.
