@@ -35,9 +35,7 @@ class AchievementModel {
 }
 
 class AchievementService {
-  final Ref _ref;
-
-  AchievementService(this._ref);
+  AchievementService();
 
   Future<List<AchievementModel>> getAchievements() async {
     final db = await databaseService.database;
@@ -103,7 +101,7 @@ class AchievementService {
   }
 }
 
-final achievementServiceProvider = Provider((ref) => AchievementService(ref));
+final achievementServiceProvider = Provider((ref) => AchievementService());
 
 final achievementsFutureProvider = FutureProvider<List<AchievementModel>>((ref) async {
   return await ref.watch(achievementServiceProvider).getAchievements();

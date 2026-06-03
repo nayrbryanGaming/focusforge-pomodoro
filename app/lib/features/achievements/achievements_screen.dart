@@ -13,7 +13,7 @@ class AchievementsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final achievementsAsync = ref.watch(achievementsStreamProvider);
+    final achievementsAsync = ref.watch(achievementsFutureProvider);
     final l10n = ref.watch(l10nServiceProvider.notifier);
 
     return Scaffold(

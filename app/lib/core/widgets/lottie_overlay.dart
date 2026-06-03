@@ -21,7 +21,7 @@ class LottieOverlay extends StatelessWidget {
     showDialog(
       context: context,
       barrierDismissible: false,
-      barrierColor: Colors.black90,
+      barrierColor: Colors.black87,
       builder: (ctx) => LottieOverlay(
         asset: asset, 
         message: message,

@@ -244,7 +244,7 @@ class SettingsScreen extends ConsumerWidget {
           Switch.adaptive(
             value: value,
             onChanged: onChanged,
-            activeColor: activeColor,
+            activeTrackColor: activeColor,
           ),
         ],
       ),

@@ -14,10 +14,9 @@ class LocalUser {
 }
 
 class AuthService {
-  final Ref _ref;
   LocalUser? _currentUser;
 
-  AuthService(this._ref) {
+  AuthService() {
     _loadUser();
   }
 
@@ -48,4 +47,4 @@ class AuthService {
   }
 }
 
-final authServiceProvider = Provider((ref) => AuthService(ref));
+final authServiceProvider = Provider((ref) => AuthService());
