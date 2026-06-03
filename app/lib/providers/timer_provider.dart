@@ -10,6 +10,7 @@ import '../core/services/settings_service.dart';
 // Removed unused task_model import
 import '../core/theme/app_theme.dart';
 import '../core/services/review_service.dart';
+import '../core/services/achievement_service.dart';
 
 enum TimerMode { focus, shortBreak, longBreak }
 
@@ -242,19 +243,36 @@ class TimerNotifier extends Notifier<TimerState> {
 
     if (isFocus) {
       try {
-        await ref.read(statsServiceProvider).updateFocusTime(_focusDuration);
+        final statsService = ref.read(statsServiceProvider);
+        await statsService.recordFocusSession(_focusDuration);
         
         final activeTaskId = state.activeTaskId;
+        int completedTasks = 0;
+        
         if (activeTaskId != null) {
-          final tasks = await ref.read(tasksStreamProvider.future);
+          final tasks = await ref.read(tasksProvider.future);
           final task = tasks.firstWhere((t) => t.id == activeTaskId);
           await ref.read(taskServiceProvider).updateTask(
             task.copyWith(completedPomodoros: task.completedPomodoros + 1),
           );
         }
+
+        // Get updated stats for achievement check
+        final todayStats = await ref.read(todayStatsProvider.future);
+        final totalFocusSeconds = await statsService.getTotalFocusTime();
+        final allTasks = await ref.read(tasksProvider.future);
+        completedTasks = allTasks.where((t) => t.isCompleted).length;
+
+        await ref.read(achievementServiceProvider).checkAchievements(
+          totalFocusSessions: state.pomodoroCount + 1,
+          totalFocusMinutes: totalFocusSeconds ~/ 60,
+          currentStreak: 1, // Basic streak for now, can be improved
+          completedTasks: completedTasks,
+        );
+        
         await ref.read(reviewServiceProvider).incrementSessionAndCheck();
       } catch (e) {
-        if (kDebugMode) debugPrint('Error updating stats/task: $e');
+        if (kDebugMode) debugPrint('Error updating stats/task/achievements: $e');
       }
 
       int newCount = state.pomodoroCount + 1;

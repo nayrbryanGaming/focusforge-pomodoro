@@ -19,7 +19,7 @@ class TimerPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = min(size.width / 2, size.height / 2);
-    final strokeWidth = 14.0;
+    const strokeWidth = 14.0;
 
     // Background track
     final backgroundPaint = Paint()
@@ -42,7 +42,7 @@ class TimerPainter extends CustomPainter {
           baseColor.withValues(alpha: 0.8),
         ],
         stops: const [0.0, 0.5, 1.0],
-        transform: GradientRotation(-pi / 2),
+        transform: const GradientRotation(-pi / 2),
       ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth

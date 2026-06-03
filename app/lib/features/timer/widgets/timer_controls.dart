@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../../../core/constants/app_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/services/l10n_service.dart';
 
-class TimerControls extends StatelessWidget {
+class TimerControls extends ConsumerWidget {
   final bool isRunning;
   final VoidCallback onToggle;
   final VoidCallback onReset;
@@ -19,7 +19,9 @@ class TimerControls extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = ref.read(l10nServiceProvider.notifier);
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 32),
       child: Row(
@@ -29,7 +31,7 @@ class TimerControls extends StatelessWidget {
             icon: Icons.refresh_rounded,
             onTap: onReset,
             size: 58,
-            tooltip: 'Restart',
+            tooltip: l10n.translate('restart_tooltip'),
           ),
           const SizedBox(width: 24),
           GestureDetector(
@@ -71,7 +73,7 @@ class TimerControls extends StatelessWidget {
             icon: Icons.skip_next_rounded,
             onTap: onSkip,
             size: 58,
-            tooltip: 'Skip',
+            tooltip: l10n.translate('skip_tooltip'),
           ),
         ],
       ),

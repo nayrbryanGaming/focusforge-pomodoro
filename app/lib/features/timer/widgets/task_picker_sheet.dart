@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/services/task_service.dart';
+import '../../../core/services/l10n_service.dart';
 import '../../../providers/timer_provider.dart';
 
 class TaskPickerSheet extends ConsumerWidget {
@@ -10,8 +11,9 @@ class TaskPickerSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tasksAsync = ref.watch(tasksStreamProvider);
+    final tasksAsync = ref.watch(tasksProvider);
     final activeTaskId = ref.watch(timerProvider).activeTaskId;
+    final l10n = ref.read(l10nServiceProvider.notifier);
 
     return Container(
       decoration: BoxDecoration(
@@ -39,9 +41,9 @@ class TaskPickerSheet extends ConsumerWidget {
             children: [
               const Icon(Icons.assignment_outlined, color: AppColors.primary, size: 22),
               const SizedBox(width: 12),
-              const Text(
-                'Assign Focus Task',
-                style: TextStyle(
+              Text(
+                l10n.translate('assign_task'),
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -55,7 +57,7 @@ class TaskPickerSheet extends ConsumerWidget {
                     Navigator.pop(context);
                   },
                   icon: const Icon(Icons.clear, size: 16),
-                  label: const Text('Clear'),
+                  label: Text(l10n.translate('clear')),
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.orange,
                   ),
@@ -63,24 +65,24 @@ class TaskPickerSheet extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 6),
-          const Text(
-            'Your session will track progress for this task.',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+          Text(
+            l10n.translate('task_session_hint'),
+            style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
           ),
           const SizedBox(height: 20),
           tasksAsync.when(
             data: (tasks) {
               if (tasks.isEmpty) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32),
                   child: Center(
                     child: Column(
                       children: [
-                        Icon(Icons.task_outlined, color: AppColors.textSecondary, size: 40),
-                        SizedBox(height: 12),
+                        const Icon(Icons.task_outlined, color: AppColors.textSecondary, size: 40),
+                        const SizedBox(height: 12),
                         Text(
-                          'No tasks yet. Create one in the Tasks tab!',
-                          style: TextStyle(color: AppColors.textSecondary),
+                          l10n.translate('no_tasks_picker'),
+                          style: const TextStyle(color: AppColors.textSecondary),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -198,11 +200,11 @@ class TaskPickerSheet extends ConsumerWidget {
                 child: CircularProgressIndicator(),
               ),
             ),
-            error: (_, __) => const Padding(
-              padding: EdgeInsets.all(24),
+            error: (_, __) => Padding(
+              padding: const EdgeInsets.all(24),
               child: Text(
-                'Could not load tasks. Sign in to access your task list.',
-                style: TextStyle(color: AppColors.textSecondary),
+                l10n.translate('load_error'),
+                style: const TextStyle(color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ),

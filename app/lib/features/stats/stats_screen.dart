@@ -1,14 +1,12 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:ui';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/services/stats_service.dart';
-import '../../providers/timer_provider.dart';
+import '../../core/services/l10n_service.dart';
 
 class StatsScreen extends ConsumerWidget {
   const StatsScreen({super.key});
@@ -16,14 +14,15 @@ class StatsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final statsAsync = ref.watch(statsStreamProvider);
-    final intensityAsync = ref.watch(focusIntensityProvider);
+    final statsAsync = ref.watch(aggregateStatsProvider);
+    final intensityAsync = ref.watch(intensityMapProvider);
+    final l10n = ref.watch(l10nServiceProvider.notifier);
     final primaryColor = theme.colorScheme.primary;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Statistics Forge', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(l10n.translate('stats'), style: const TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
@@ -35,7 +34,7 @@ class StatsScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildProgressOverview(theme, stats),
+              _buildProgressOverview(theme, stats, l10n),
               const SizedBox(height: 32),
               _buildSectionHeader('CONSISTENCY HEATMAP', Icons.grid_view_rounded),
               const SizedBox(height: 16),
@@ -61,7 +60,7 @@ class StatsScreen extends ConsumerWidget {
                 children: [
                   _buildMetricCard(
                     'Focus Time', 
-                    '${(stats.totalFocusTime / 3600).toStringAsFixed(1)}h', 
+                    '${(stats.totalFocusSeconds / 3600).toStringAsFixed(1)}h', 
                     Icons.timer_outlined, 
                     primaryColor, 
                     400
@@ -70,7 +69,7 @@ class StatsScreen extends ConsumerWidget {
                     'Forge Points', 
                     '${stats.totalPoints}', 
                     Icons.bolt, 
-                    const Color(0xFFFFD166), 
+                    AppColors.accent, 
                     500
                   ),
                   _buildMetricCard(
@@ -117,7 +116,7 @@ class StatsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProgressOverview(ThemeData theme, StatsModel stats) {
+  Widget _buildProgressOverview(ThemeData theme, UserStats stats, L10nService l10n) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(32),
@@ -150,7 +149,7 @@ class StatsScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    stats.level > 10 ? 'Grandmaster Forge' : 'Apprentice Forger',
+                    stats.level > 10 ? l10n.translate('grandmaster_forger') : l10n.translate('apprentice_forger'),
                     style: const TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.w900,
@@ -160,7 +159,7 @@ class StatsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Rank: ${stats.level > 20 ? 'Mythic Vanguard' : 'Focus Aspirant'}',
+                    '${l10n.translate('rank')}: ${stats.level > 20 ? l10n.translate('mythic_vanguard') : l10n.translate('focus_aspirant')}',
                     style: TextStyle(
                       color: theme.colorScheme.primary,
                       fontSize: 14,
@@ -206,7 +205,7 @@ class StatsScreen extends ConsumerWidget {
   }
 
   Widget _buildFocusHeatmap(BuildContext context, WidgetRef ref) {
-    final intensityAsync = ref.watch(focusIntensityProvider);
+    final intensityAsync = ref.watch(intensityMapProvider);
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -256,19 +255,19 @@ class StatsScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Less Focus', style: TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold)),
+                  const Text('Less Focus', style: TextStyle(color: Colors.white60, fontSize: 10, fontWeight: FontWeight.bold)),
                   Row(
                     children: List.generate(5, (i) => Container(
                       width: 10,
                       height: 10,
                       margin: const EdgeInsets.only(left: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: (0.1 + (i * 0.225)).clamp(0.0, 1.0)),
+                        color: AppColors.primary.withValues(alpha: (0.2 + (i * 0.2)).clamp(0.0, 1.0)),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     )),
                   ),
-                  const Text('Master Focus', style: TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold)),
+                  const Text('Master Focus', style: TextStyle(color: Colors.white60, fontSize: 10, fontWeight: FontWeight.bold)),
                 ],
               ),
             ],
@@ -413,5 +412,5 @@ class StatsScreen extends ConsumerWidget {
   }
 
   Widget _buildChartLoader() => const SizedBox(height: 240, child: Center(child: CircularProgressIndicator()));
-  Widget _buildChartError() => const SizedBox(height: 240, child: Center(child: Icon(Icons.error_outline, color: Colors.white24)));
+  Widget _buildChartError() => const SizedBox(height: 240, child: Center(child: Icon(Icons.error_outline, color: Colors.white60)));
 }

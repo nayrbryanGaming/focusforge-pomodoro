@@ -15,14 +15,10 @@ dependencies:
 
   # UI & Styling
   cupertino_icons: ^1.0.6
-  google_fonts: ^6.1.0
 
-  # Backend
-  firebase_core: ^2.27.1
-  firebase_auth: ^4.19.1
-  cloud_firestore: ^4.15.8
-  firebase_analytics: ^10.8.9
-  firebase_crashlytics: ^3.4.20
+  # Offline Storage
+  sqflite: ^2.3.0
+  path: ^1.9.0
 
   # Utils
   shared_preferences: ^2.2.2
@@ -54,9 +50,6 @@ dependencies:
 
   # Celebration effects
   confetti: ^0.8.0
-
-  # Lottie animations
-  lottie: ^3.1.2
 
   # In-app review prompt
   in_app_review: ^2.0.9

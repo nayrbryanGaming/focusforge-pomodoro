@@ -1,5 +1,4 @@
 import 'package:uuid/uuid.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum TaskCategory { work, study, personal, other }
 enum TaskPriority { low, medium, high }
@@ -48,26 +47,27 @@ class TaskModel {
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'title': title,
-      'estimatedPomodoros': estimatedPomodoros,
-      'completedPomodoros': completedPomodoros,
-      'completed': isCompleted,
-      'createdAt': Timestamp.fromDate(createdAt),
+      'estimated_pomodoros': estimatedPomodoros,
+      'completed_pomodoros': completedPomodoros,
+      'is_completed': isCompleted ? 1 : 0,
+      'created_at': createdAt.toIso8601String(),
       'category': category.name,
       'priority': priority.name,
     };
   }
 
-  factory TaskModel.fromFirestore(Map<String, dynamic> map, String id) {
+  factory TaskModel.fromMap(Map<String, dynamic> map) {
     return TaskModel(
-      id: id,
+      id: map['id'],
       title: map['title'] ?? '',
-      estimatedPomodoros: map['estimatedPomodoros'] ?? 1,
-      completedPomodoros: map['completedPomodoros'] ?? 0,
-      isCompleted: map['completed'] ?? false,
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      estimatedPomodoros: map['estimated_pomodoros'] ?? 1,
+      completedPomodoros: map['completed_pomodoros'] ?? 0,
+      isCompleted: (map['is_completed'] ?? 0) == 1,
+      createdAt: DateTime.parse(map['created_at']),
       category: TaskCategory.values.firstWhere(
         (e) => e.name == map['category'],
         orElse: () => TaskCategory.work,

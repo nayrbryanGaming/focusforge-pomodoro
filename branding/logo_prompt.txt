@@ -1,6 +1,0 @@
-FOCUSFORGE LOGO DESIGN PROMPT
-
-Concept: A minimalist app icon representing the "Forge" and "Focus" duality.
-
-Prompt: 
-"A premium app icon for a productivity app named FocusForge. The icon features a minimalist geometric tomato (Pomodoro) silhouette that subtly morphs into a glowing anvil or flame shape. Style: Modern 3D glassmorphism, matte finish with sharp metallic edges. Colors: Vibrant Deep Orange (#FF6B35) and Soft Solar Yellow (#FFD166) highlights against a deep midnight navy background. The design is clean, centered, and sophisticated, suggesting craftsmanship and cognitive power. High resolution, high detail, masterpiece quality."

@@ -1,108 +1,53 @@
-# FocusForge: The Deep Work Infrastructure
+# FocusForge
 
-[![FocusForge v1.3.1](https://img.shields.io/badge/FocusForge-v1.3.1--Hardened-orange?style=for-the-badge)](https://focusforge.app)
-[![Submission 18](https://img.shields.io/badge/Google%20Play-18th%20Submission-blue?style=for-the-badge)](https://play.google.com/store/apps/details?id=com.focusforge.pomodoro)
-
-> **Forge Deep Focus. Build Unstoppable Productivity.**
-
-FocusForge is a clinical-grade Pomodoro productivity application engineered for builders, founders, and absolute focus athletes. Built with Flutter and Firebase, it transmutes distractibility into a structured system of deep work, habit formation, and high-performance analytics.
+### Forge Deep Focus. Build Unstoppable Productivity.
+[Live Demo Landing Page](https://focusforge-pomodoro.vercel.app/) • [Download APK](https://github.com/nayrbryanGaming/focusforge-pomodoro/releases)
 
 ---
 
-## 🛠 Problem: The Cognitive Fragmentation
-Modern workers face a dual crisis:
-1.  **Digital Hyper-Distraction**: Constant pings erode the ability to enter "Flow State."
-2.  **Unstructured Entropy**: Without a system, work expands to fill available time (Parkinson’s Law), leading to burnout.
+## 1. One-liner
+FocusForge is a premium, 100% offline-first Pomodoro habit system engineered for high-stakes concentration and verifiable productivity.
 
-Existing tools are either too simplistic (basic timers) or visually outdated, failing to leverage Pavlovian triggers and neurological reward cycles.
+## 2. Problem
+Modern knowledge work is plagued by digital friction and "connected distractions." Most productivity apps require cloud sync, introducing latency, privacy risks, and the temptation to switch apps. Existing tools lack the depth of analytics and gamification required to build long-term neuroplastic focus habits.
 
-## ⚔️ Solution: The Forge Protocol
-FocusForge is not just a timer; it is a **productivity operating system**. It combines:
-*   **Structured Focus Intervals**: Optimized 25/5 cycles with haptic and visual cues.
-*   **Task Weighting**: Prioritize tasks by "Forge Effort" rather than simple lists.
-*   **Insight Dynamics**: Clinical visualization of focus consistency via heatmaps.
-*   **Gamified Retention**: Streak tracking and "Forger Levels" to maintain momentum.
+## 3. Solution
+FocusForge eliminates the noise by operating in total isolation. It combines a high-precision Pomodoro engine with a robust local task manager and deep-history analytics. By removing all cloud dependencies, FocusForge ensures zero-latency performance and absolute data sovereignty, allowing users to "forge" focus in a secure, local environment.
 
----
+## 4. Why FocusForge?
+- **Zero-Trust Privacy**: Your data never leaves your device. No cloud transmission, no tracking.
+- **Scientific Intervals**: Precision-tuned sessions (25/5/15) based on the Pomodoro Technique.
+- **Deep Analytics**: Visualize your productivity "heat" through locally generated charts and streak tracking.
+- **Gamified Mastery**: Earn XP and badges as you master your time, transforming discipline into a rewarding game.
 
-## 🚀 Feature Set
+## 5. Architecture
+FocusForge follows **Clean Architecture** patterns:
+- **Presentation**: Flutter + Riverpod for reactive, stable state management.
+- **Domain**: Pure business logic decoupled from any framework.
+- **Data**: High-performance persistence using local SQLite (`sqflite`).
+- **Safety**: Robust error boundaries and haptic-backed user feedback.
 
-### 1. The Forge Timer
-*   **Material 3 Dynamic UI**: Adapts color based on focus/break state.
-*   **Concentration Mode**: Strips away all UI noise, leaving only the countdown.
-*   **Custom Protcols**: Tailor work/rest durations to your personal peak energy.
+## 6. What's Built
+- [x] **Precision Timer**: Customizable focus/break cycles with background persistence.
+- [x] **Task Engine**: Integrated task management with Pomodoro estimation.
+- [x] **Productivity Vault**: Advanced local statistics and session history.
+- [x] **Hardened UI**: Premium dark-mode interface with high-contrast accessibility.
+- [x] **Bilingual Core**: Full localization support for English and Bahasa Indonesia.
 
-### 2. Strategic Task Management
-*   **Session Estimation**: Assign "Forge Sessions" to tasks to visualize required effort.
-*   **Priority Heatmapping**: High-priority tasks glow with intensity.
-*   **Category Sorting**: Separate Work, Study, and Personal growth streams.
+## 7. Team
+Developed by the **FocusForge Engineering Group**.
 
-### 3. Productivity Analytics
-*   **Focus Heatmap**: 28-day consistency grid (GitHub-style).
-*   **Intensity Charts**: Weekly focus hour distribution visualization.
-*   **Progression System**: Earn Forge Points and level up your productivity rank.
+## 8. Quick Start
+```bash
+# Clone the repository
+git clone https://github.com/nayrbryanGaming/focusforge-pomodoro.git
 
-### 4. Enterprise-Grade Core
-*   **Cloud Sync**: Secure Firebase authentication and real-time Firestore sync.
-*   **Offline First**: Works perfectly in high-focus environments without internet.
-*   **Policy Compliant**: Fully audited for Google Play Safety and Privacy standards.
+# Move to app directory
+cd app && flutter pub get
 
----
-
-## 🏗 Architecture & Tech Stack
-
-### Frontend
-*   **Flutter (Stable)**: High-performance cross-platform rendering.
-*   **Riverpod**: Compile-time safe state management.
-*   **Animate-Do**: Premium micro-animations for UX delight.
-*   **Material 3**: Modern, clean design language.
-
-### Backend
-*   **Firebase Auth**: Secure anonymous and email-based identity.
-*   **Cloud Firestore**: Real-time NoSQL data persistence.
-*   **Firebase Analytics**: User behavior tracking for product optimization.
-*   **Crashlytics**: Production-grade stability monitoring.
-
-### Structure
-Built using **Clean Architecture** (Presentation/Domain/Data) and the **MVVM + Repository** pattern for maximum maintainability.
+# Run the app
+flutter run --release
+```
 
 ---
-
-## 📦 Development Setup
-
-### Prerequisites
-*   Flutter SDK `^3.19.0`
-*   Dart `^3.3.0`
-*   Firebase CLI (for backend modifications)
-
-### Installation
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/nayrbryanGaming/focusforge-pomodoro.git
-    ```
-2.  Install dependencies:
-    ```bash
-    flutter pub get
-    ```
-3.  Configure Firebase:
-    *   Place `google-services.json` in `app/android/app/`.
-    *   Place `GoogleService-Info.plist` in `app/ios/Runner/`.
-4.  Run the application:
-    ```bash
-    flutter run --release
-    ```
-
----
-
-## 🗺 Roadmap
-*   **Q3 2026**: "Forge Pass" — Premium custom themes and soundscapes.
-*   **Q4 2026**: "Forge Groups" — Real-time collaborative focus rooms.
-*   **Q1 2027**: WearOS & Apple Watch standalone clients.
-
-## 💰 Monetization Strategy
-*   **Freemium Model**: Core timer and basic tasks remain free forever.
-*   **Forge Pro ($4.99/mo)**: Advanced analytics, unlimited tasks, and cross-device cloud sync.
-
-## 📜 License
-Copyright © 2026 FocusForge Protocol. All rights reserved.
-Developed for the 18th Google Play Submission Hardening.
+© 2026 FocusForge Protocol. All Rights Reserved.

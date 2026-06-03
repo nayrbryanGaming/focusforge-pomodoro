@@ -135,7 +135,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           onPressed: _advance,
                           child: const Text(
                             'Skip',
-                            style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                            style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),

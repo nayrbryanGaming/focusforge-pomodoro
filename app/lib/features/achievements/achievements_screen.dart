@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'dart:ui';
+
 import '../../core/constants/app_colors.dart';
 import '../../core/services/achievement_service.dart';
-import '../../core/services/confetti_service.dart';
-import 'package:animate_do/animate_do.dart';
-import 'dart:ui';
+import '../../core/services/l10n_service.dart';
 
 class AchievementsScreen extends ConsumerWidget {
   const AchievementsScreen({super.key});
@@ -12,13 +14,14 @@ class AchievementsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final achievementsAsync = ref.watch(achievementsStreamProvider);
-    final theme = Theme.of(context);
+    final l10n = ref.watch(l10nServiceProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Achievement Forge'),
+        title: Text(l10n.translate('achievements'), style: const TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -54,14 +57,11 @@ class AchievementsScreen extends ConsumerWidget {
               itemCount: achievements.length,
               itemBuilder: (context, index) {
                 final achievement = achievements[index];
-                return FadeInUp(
-                  delay: Duration(milliseconds: index * 50),
-                  child: _AchievementCard(achievement: achievement),
-                );
+                return _AchievementCard(achievement: achievement, index: index);
               },
             ),
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (_, __) => const Center(child: Text('Error loading achievements', style: TextStyle(color: Colors.white))),
+            error: (err, stack) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.white))),
           ),
         ],
       ),
@@ -71,19 +71,19 @@ class AchievementsScreen extends ConsumerWidget {
 
 class _AchievementCard extends ConsumerWidget {
   final AchievementModel achievement;
+  final int index;
 
-  const _AchievementCard({required this.achievement});
+  const _AchievementCard({required this.achievement, required this.index});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final isUnlocked = achievement.isUnlocked;
+    final l10n = ref.watch(l10nServiceProvider.notifier);
 
     return GestureDetector(
       onTap: () {
         if (isUnlocked) {
           HapticFeedback.mediumImpact();
-          ref.read(confettiServiceProvider).play();
         }
       },
       child: AnimatedContainer(
@@ -159,7 +159,7 @@ class _AchievementCard extends ConsumerWidget {
                             achievement.icon,
                             style: TextStyle(
                               fontSize: 48,
-                              color: isUnlocked ? null : Colors.white.withValues(alpha: 0.05),
+                              color: isUnlocked ? null : Colors.white.withValues(alpha: 0.3),
                               shadows: isUnlocked ? [
                                 Shadow(
                                   color: AppColors.primary.withValues(alpha: 0.5),
@@ -174,24 +174,24 @@ class _AchievementCard extends ConsumerWidget {
                           Positioned(
                             bottom: 0,
                             right: 0,
-                            child: Icon(Icons.lock_rounded, size: 18, color: Colors.white.withValues(alpha: 0.15)),
+                            child: Icon(Icons.lock_rounded, size: 18, color: Colors.white.withValues(alpha: 0.5)),
                           ),
                       ],
                     ),
                     const SizedBox(height: 18),
                     Text(
-                      achievement.title,
+                      l10n.translate(achievement.title),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 15,
-                        color: isUnlocked ? Colors.white : Colors.white.withValues(alpha: 0.2),
+                        color: isUnlocked ? Colors.white : Colors.white.withValues(alpha: 0.6),
                         letterSpacing: 0.2,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      achievement.description,
+                      l10n.translate(achievement.description),
                       textAlign: TextAlign.center,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -199,7 +199,7 @@ class _AchievementCard extends ConsumerWidget {
                         fontSize: 11,
                         height: 1.4,
                         fontWeight: FontWeight.w500,
-                        color: isUnlocked ? AppColors.textSecondary : Colors.white.withValues(alpha: 0.1),
+                        color: isUnlocked ? AppColors.textSecondary : Colors.white.withValues(alpha: 0.4),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -211,7 +211,7 @@ class _AchievementCard extends ConsumerWidget {
           ),
         ),
       ),
-    );
+    ).animate().fadeIn(delay: (index * 50).ms).slideY(begin: 0.1, end: 0);
   }
 
   Widget _buildProgressBar(double current, double target, bool isUnlocked) {
@@ -224,7 +224,7 @@ class _AchievementCard extends ConsumerWidget {
             value: percent,
             backgroundColor: Colors.white.withValues(alpha: 0.05),
             valueColor: AlwaysStoppedAnimation<Color>(
-              AppColors.primary.withValues(alpha: isUnlocked ? 0.6 : 0.2),
+              AppColors.primary.withValues(alpha: isUnlocked ? 0.8 : 0.2),
             ),
             minHeight: 4,
           ),
@@ -234,7 +234,7 @@ class _AchievementCard extends ConsumerWidget {
           '${(percent * 100).toInt()}%',
           style: TextStyle(
             fontSize: 9, 
-            color: Colors.white.withValues(alpha: 0.2),
+            color: Colors.white.withValues(alpha: 0.6),
             fontWeight: FontWeight.bold,
           ),
         ),

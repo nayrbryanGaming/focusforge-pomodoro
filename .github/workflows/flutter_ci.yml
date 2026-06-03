@@ -2,37 +2,35 @@ name: Flutter CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.x'
-          channel: 'stable'
-      
-      - name: Install Dependencies
-        run: |
-          cd app
-          flutter pub get
-          
-      - name: Format
-        run: |
-          cd app
-          dart format --set-exit-if-changed .
-          
-      - name: Analyze
-        run: |
-          cd app
-          flutter analyze
-          
-      - name: Run Tests
-        run: |
-          cd app
-          flutter test
+    - uses: actions/checkout@v4
+    
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.22.0'
+        channel: 'stable'
+        
+    - name: Install dependencies
+      run: flutter pub get
+      working-directory: app
+
+    - name: Analyze project
+      run: flutter analyze
+      working-directory: app
+
+    - name: Run tests
+      run: flutter test
+      working-directory: app
+
+    - name: Build APK
+      run: flutter build apk --release
+      working-directory: app

@@ -4,25 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:confetti/confetti.dart';
 import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'core/theme/app_theme.dart';
 import 'features/timer/timer_screen.dart';
 import 'features/onboarding/onboarding_screen.dart';
-import 'features/auth/auth_screen.dart';
 import 'features/tasks/tasks_screen.dart';
 import 'features/stats/stats_screen.dart';
 import 'features/profile/profile_screen.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/toast_service.dart';
-import 'core/services/analytics_service.dart';
 import 'core/services/settings_service.dart';
 import 'core/services/l10n_service.dart';
 import 'core/services/review_service.dart';
 import 'core/services/auth_service.dart';
 import 'core/constants/app_colors.dart';
-// Removed unused timer_provider import
+import 'providers/onboarding_provider.dart';
 
 const String _kOnboardingDone = 'onboarding_complete_v2';
 
@@ -32,41 +28,20 @@ void main() async {
   // Initialize SharedPreferences
   final prefs = await SharedPreferences.getInstance();
 
-  // Initialize Firebase
-  try {
-    await Firebase.initializeApp();
-    // Set up crash reporting for release builds only
-    if (!kDebugMode) {
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-      PlatformDispatcher.instance.onError = (error, stack) {
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-        return true;
-      };
-    }
-    if (kDebugMode) debugPrint('✅ Firebase initialized successfully');
-  } catch (e) {
-    if (kDebugMode) debugPrint('⚠️ Firebase not initialized: $e');
-  }
-
   // Initialize Notification Service
   final container = ProviderContainer(
     overrides: [
       settingsServiceProvider.overrideWith((ref) => SettingsService(prefs)),
       l10nServiceProvider.overrideWith((ref) => L10nService(prefs)),
       reviewServiceProvider.overrideWith((ref) => ReviewService(prefs)),
+      onboardingProvider.overrideWith((ref) => OnboardingNotifier(prefs)),
     ],
   );
+
   try {
     await container.read(notificationServiceProvider).init();
   } catch (e) {
     if (kDebugMode) debugPrint('⚠️ Notifications unavailable: $e');
-  }
-
-  // Log app open event
-  try {
-    await analyticsService.logEvent('app_opened');
-  } catch (e) {
-    if (kDebugMode) debugPrint('Analytics log skipped: $e');
   }
 
   runApp(
@@ -84,10 +59,8 @@ class FocusForgeApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final timerThemeState = ref.watch(timerThemeProvider);
-
     return AnimatedTheme(
-      data: AppTheme.getForMode(timerThemeState.timerTheme),
+      data: AppTheme.getForMode(ref.watch(timerThemeProvider).timerTheme),
       duration: const Duration(milliseconds: 700),
       curve: Curves.easeInOut,
       child: Builder(
@@ -96,7 +69,7 @@ class FocusForgeApp extends ConsumerWidget {
             title: 'FocusForge',
             debugShowCheckedModeBanner: false,
             scaffoldMessengerKey: ToastService.messengerKey,
-            theme: AppTheme.getForMode(timerThemeState.timerTheme),
+            theme: AppTheme.getForMode(ref.watch(timerThemeProvider).timerTheme),
             home: _RootRouter(prefs: prefs),
           );
         },
@@ -105,10 +78,6 @@ class FocusForgeApp extends ConsumerWidget {
   }
 }
 
-/// Smart router that sends users to the right screen based on state:
-/// - New user → Onboarding
-/// - Returning user, not signed in → AuthScreen
-/// - Signed in (guest or full account) → MainNavigationScreen
 class _RootRouter extends ConsumerWidget {
   final SharedPreferences prefs;
 
@@ -116,24 +85,16 @@ class _RootRouter extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasSeenOnboarding = prefs.getBool(_kOnboardingDone) ?? false;
+    final isComplete = ref.watch(onboardingProvider);
 
-    if (!hasSeenOnboarding) {
-      return OnboardingScreen(onComplete: () async {
-        await prefs.setBool(_kOnboardingDone, true);
+    if (!isComplete) {
+      return OnboardingScreen(onComplete: () {
+        ref.read(onboardingProvider.notifier).completeOnboarding();
       });
     }
 
-    final authService = ref.read(authServiceProvider);
-    final user = authService.currentUser;
-
-    if (user != null) {
-      // Already signed in (anonymous or full account)
-      return const MainNavigationScreen();
-    }
-
-    // Not signed in — show auth
-    return const AuthScreen();
+    // Offline app: Always direct to MainNavigationScreen
+    return const MainNavigationScreen();
   }
 }
 
@@ -189,7 +150,6 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
             onDestinationSelected: (index) {
               setState(() => _currentIndex = index);
               HapticFeedback.selectionClick();
-              analyticsService.logEvent('tab_switched', parameters: {'index': index});
             },
             destinations: [
               NavigationDestination(
@@ -218,21 +178,23 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
 
         // Global Confetti Overlay
         if (!isPowerSaving)
-          ConfettiWidget(
-            confettiController: _confettiController,
-            blastDirection: pi / 2,
-            maxBlastForce: 5,
-            minBlastForce: 2,
-            emissionFrequency: 0.05,
-            numberOfParticles: 50,
-            gravity: 0.05,
-            colors: const [
-              AppColors.primary,
-              AppColors.accent,
-              AppColors.success,
-              Colors.white,
-            ],
-            pauseEmissionOnLowFrameRate: true,
+          IgnorePointer(
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirection: pi / 2,
+              maxBlastForce: 5,
+              minBlastForce: 2,
+              emissionFrequency: 0.05,
+              numberOfParticles: 50,
+              gravity: 0.05,
+              colors: const [
+                AppColors.primary,
+                AppColors.accent,
+                AppColors.success,
+                Colors.white,
+              ],
+              pauseEmissionOnLowFrameRate: true,
+            ),
           ),
       ],
     );

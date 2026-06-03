@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../core/constants/app_colors.dart';
 import '../../models/task_model.dart';
 import '../../core/services/task_service.dart';
+import '../../core/services/l10n_service.dart';
 
 class TaskDetailsScreen extends ConsumerStatefulWidget {
   final String taskId;
@@ -45,13 +46,15 @@ class _TaskDetailsScreenState extends ConsumerState<TaskDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = ref.watch(l10nServiceProvider.notifier);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Task Details', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(l10n.translate('task_details'), style: const TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-            onPressed: () => _confirmDelete(context),
+            onPressed: () => _confirmDelete(context, l10n),
           ),
         ],
       ),
@@ -62,55 +65,73 @@ class _TaskDetailsScreenState extends ConsumerState<TaskDetailsScreen> {
           children: [
             TextFormField(
               controller: _titleController,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              decoration: const InputDecoration(
-                labelText: 'Task Title',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
-                border: UnderlineInputBorder(),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Colors.white),
+              decoration: InputDecoration(
+                labelText: l10n.translate('task_title'),
+                labelStyle: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                border: const UnderlineInputBorder(),
               ),
             ).animate().fadeIn().moveX(begin: -20, end: 0),
             
             const SizedBox(height: 32),
-            _buildStatRow('Total Focus Time', '${widget.completed * 25}m'),
-            _buildStatRow('Sessions Completed', '${widget.completed} / $_estimated'),
-            _buildStatRow('Created On', DateFormat('MMM dd, yyyy').format(widget.task.createdAt)),
-            _buildStatRow('Category', widget.task.category.name.toUpperCase()),
+            _buildStatRow(l10n.translate('total_focus_time'), '${widget.completed * 25}m'),
+            _buildStatRow(l10n.translate('sessions_completed'), '${widget.completed} / $_estimated'),
+            _buildStatRow(l10n.translate('created_on'), DateFormat('MMM dd, yyyy').format(widget.task.createdAt)),
+            _buildStatRow(l10n.translate('category'), widget.task.category.name.toUpperCase()),
             
             const SizedBox(height: 32),
-            const Text('Estimation', style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.bold)),
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.remove_circle_outline),
-                  onPressed: () => setState(() { if (_estimated > 1) _estimated--; }),
-                ),
-                Text('$_estimated Forge Sessions', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                IconButton(
-                  icon: const Icon(Icons.add_circle_outline),
-                  onPressed: () => setState(() { if (_estimated < 12) _estimated++; }),
-                ),
-              ],
+            Text(l10n.translate('estimation'), style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900, fontSize: 12, letterSpacing: 1)),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.remove_circle_outline, color: Colors.white70),
+                    onPressed: () => setState(() { if (_estimated > 1) _estimated--; }),
+                  ),
+                  const SizedBox(width: 12),
+                  Text('$_estimated', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.white)),
+                  const SizedBox(width: 12),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline, color: Colors.white70),
+                    onPressed: () => setState(() { if (_estimated < 12) _estimated++; }),
+                  ),
+                ],
+              ),
             ),
 
             const SizedBox(height: 48),
-            const Text(
-              'Session History',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Text(
+              l10n.translate('session_history'),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
             ),
             const SizedBox(height: 16),
             if (widget.completed == 0)
-              const Center(child: Text('No sessions logged yet.', style: TextStyle(color: AppColors.textSecondary)))
+              Center(child: Text(l10n.translate('no_sessions_logged'), style: const TextStyle(color: Colors.white38, fontWeight: FontWeight.bold)))
             else
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: widget.completed,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: const Icon(Icons.check_circle, color: AppColors.success),
-                    title: Text('Session ${index + 1}'),
-                    subtitle: const Text('25:00 focus completed'),
-                    trailing: Text(DateFormat('HH:mm').format(DateTime.now())),
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.03),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ListTile(
+                      leading: const Icon(Icons.check_circle, color: AppColors.success),
+                      title: Text('Session ${index + 1}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                      subtitle: const Text('25:00 focus completed', style: TextStyle(color: AppColors.textSecondary)),
+                      trailing: Text(DateFormat('HH:mm').format(DateTime.now()), style: const TextStyle(color: Colors.white38)),
+                    ),
                   ).animate().fadeIn(delay: Duration(milliseconds: index * 50));
                 },
               ),
@@ -121,7 +142,8 @@ class _TaskDetailsScreenState extends ConsumerState<TaskDetailsScreen> {
         padding: const EdgeInsets.all(24.0),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            backgroundColor: AppColors.primary,
+            padding: const EdgeInsets.symmetric(vertical: 18),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
           onPressed: () async {
@@ -132,7 +154,7 @@ class _TaskDetailsScreenState extends ConsumerState<TaskDetailsScreen> {
             await ref.read(taskServiceProvider).updateTask(updatedTask);
             if (context.mounted) Navigator.pop(context);
           },
-          child: const Text('SAVE MODIFICATIONS', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),
+          child: Text(l10n.translate('save_modifications'), style: const TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.5, color: Colors.white)),
         ),
       ),
     );
@@ -144,24 +166,25 @@ class _TaskDetailsScreenState extends ConsumerState<TaskDetailsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+          Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14, fontWeight: FontWeight.bold)),
           Text(value, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Colors.white)),
         ],
       ),
     );
   }
 
-  void _confirmDelete(BuildContext context) {
+  void _confirmDelete(BuildContext context, L10nService l10n) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1A1F36),
-        title: const Text('Delete Task?'),
-        content: const Text('This will remove the task and all its focus history from the Forge.'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Text(l10n.translate('delete_task_confirm'), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        content: Text(l10n.translate('delete_task_body'), style: const TextStyle(color: AppColors.textSecondary)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.translate('cancel'))),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
             onPressed: () async {
               await ref.read(taskServiceProvider).deleteTask(widget.taskId);
               if (ctx.mounted) {
@@ -169,7 +192,7 @@ class _TaskDetailsScreenState extends ConsumerState<TaskDetailsScreen> {
                 Navigator.pop(context);
               }
             },
-            child: const Text('Delete'),
+            child: Text(l10n.translate('clear')),
           ),
         ],
       ),

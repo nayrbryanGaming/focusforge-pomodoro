@@ -3,15 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'dart:ui';
 import 'dart:math';
 
 import '../../providers/timer_provider.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/services/community_service.dart';
 import '../../core/services/task_service.dart';
 import '../../core/services/settings_service.dart';
 import '../../core/services/notification_service.dart';
+import '../../core/services/l10n_service.dart';
 
 import 'widgets/mode_selector.dart';
 import 'widgets/timer_display.dart';
@@ -67,9 +66,9 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     final timerState = ref.watch(timerProvider);
     final timerNotifier = ref.read(timerProvider.notifier);
     final theme = Theme.of(context);
+    final l10n = ref.watch(l10nServiceProvider.notifier);
     final isPowerSaving = ref.watch(settingsServiceProvider).isPowerSavingMode;
-    final activeUsersAsync = ref.watch(activeUsersCountProvider);
-    final tasksAsync = ref.watch(tasksStreamProvider);
+    final tasksAsync = ref.watch(tasksProvider);
     
     String? activeTaskTitle;
     if (timerState.activeTaskId != null) {
@@ -84,7 +83,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
 
     final baseColor = timerState.mode == TimerMode.focus
         ? theme.colorScheme.primary
-        : timerState.mode == TimerMode.shortBreak ? AppColors.success : Colors.lightBlueAccent;
+        : timerState.mode == TimerMode.shortBreak ? AppColors.success : theme.colorScheme.secondary;
 
     return Scaffold(
       backgroundColor: _isConcentrationMode ? Colors.black : theme.scaffoldBackgroundColor,
@@ -98,7 +97,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
               actions: [
                 _buildActionButton(
                   icon: Icons.fullscreen_outlined,
-                  tooltip: 'Concentration Mode',
+                  tooltip: l10n.translate('concentration_mode'),
                   onTap: () => setState(() => _isConcentrationMode = true),
                 ),
               ],
@@ -124,9 +123,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
               Column(
                 children: [
                   if (!_isConcentrationMode) ...[
-                    const SizedBox(height: 12),
-                    _buildActiveUsersIndicator(activeUsersAsync),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 24),
                     ModeSelector(
                       currentMode: timerState.mode,
                       onModeChanged: (mode) => timerNotifier.switchMode(mode),
@@ -151,7 +148,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                   
                   // Active Task Pill
                   if (!_isConcentrationMode)
-                    _buildActiveTaskPill(timerState.activeTaskId, activeTaskTitle, baseColor),
+                    _buildActiveTaskPill(timerState.activeTaskId, activeTaskTitle, baseColor, l10n),
                   
                   const Spacer(),
                   
@@ -160,7 +157,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                     TimerControls(
                       isRunning: timerState.isRunning,
                       baseColor: baseColor,
-                      onToggle: () => _handleToggle(timerState.isRunning, timerNotifier),
+                      onToggle: () => _handleToggle(timerState.isRunning, timerNotifier, l10n),
                       onReset: () {
                         HapticFeedback.mediumImpact();
                         timerNotifier.resetTimer();
@@ -172,7 +169,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                     ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2, end: 0),
 
                   if (_isConcentrationMode)
-                    _buildConcentrationControls(timerState.isRunning, timerNotifier),
+                    _buildConcentrationControls(timerState.isRunning, timerNotifier, l10n),
                   
                   const SizedBox(height: 12),
                 ],
@@ -250,53 +247,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     );
   }
 
-  Widget _buildActiveUsersIndicator(AsyncValue<int> countAsync) {
-    return FadeInDown(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.03),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: AppColors.success,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(color: AppColors.success, blurRadius: 6, spreadRadius: 2)
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              countAsync.when(
-                data: (count) => Text(
-                  '$count Forgers active now',
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                loading: () => const Text('Connecting...', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                error: (_, __) => const SizedBox(),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActiveTaskPill(String? activeTaskId, String? activeTaskTitle, Color baseColor) {
+  Widget _buildActiveTaskPill(String? activeTaskId, String? activeTaskTitle, Color baseColor, L10nService l10n) {
     return FadeInUp(
       delay: const Duration(milliseconds: 400),
       child: GestureDetector(
@@ -320,15 +271,15 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
               Icon(
                 activeTaskId != null ? Icons.bolt : Icons.add_circle_outline,
                 size: 18,
-                color: activeTaskId != null ? baseColor : Colors.white38,
+                color: activeTaskId != null ? baseColor : Colors.white70,
               ),
               const SizedBox(width: 12),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 180),
                 child: Text(
-                  activeTaskId != null ? (activeTaskTitle ?? 'Forge Active ✓') : 'What are we forging?',
+                  activeTaskId != null ? (activeTaskTitle ?? l10n.translate('forge_active')) : l10n.translate('what_are_we_forging'),
                   style: TextStyle(
-                    color: activeTaskId != null ? Colors.white : Colors.white38,
+                    color: activeTaskId != null ? Colors.white : Colors.white70,
                     fontWeight: activeTaskId != null ? FontWeight.bold : FontWeight.w500,
                     fontSize: 14,
                   ),
@@ -336,7 +287,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(Icons.unfold_more, size: 14, color: Colors.white24),
+              const Icon(Icons.unfold_more, size: 14, color: Colors.white70),
             ],
           ),
         ),
@@ -344,7 +295,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     );
   }
 
-  Widget _buildConcentrationControls(bool isRunning, TimerNotifier notifier) {
+  Widget _buildConcentrationControls(bool isRunning, TimerNotifier notifier, L10nService l10n) {
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
@@ -360,21 +311,21 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
           const SizedBox(height: 24),
           TextButton.icon(
             onPressed: () => setState(() => _isConcentrationMode = false),
-            icon: const Icon(Icons.close, color: Colors.white24, size: 18),
-            label: const Text('Exit Focus', style: TextStyle(color: Colors.white24)),
+            icon: const Icon(Icons.close, color: Colors.white70, size: 18),
+            label: Text(l10n.translate('exit_focus'), style: const TextStyle(color: Colors.white70)),
           ),
         ],
       ),
     );
   }
 
-  Future<void> _handleToggle(bool isRunning, TimerNotifier notifier) async {
+  Future<void> _handleToggle(bool isRunning, TimerNotifier notifier, L10nService l10n) async {
     HapticFeedback.heavyImpact();
     
     if (!isRunning) {
       final ns = ref.read(notificationServiceProvider);
       if (!(await ns.checkPermission())) {
-        final result = await _showNotificationPrimingDialog();
+        final result = await _showNotificationPrimingDialog(l10n);
         if (result == true) {
           await ns.requestPermissions();
         }
@@ -384,26 +335,26 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     notifier.toggleTimer();
   }
 
-  Future<bool?> _showNotificationPrimingDialog() {
+  Future<bool?> _showNotificationPrimingDialog(L10nService l10n) {
     return showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1E2640),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text('Stay Focused?', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        content: const Text(
-          'Allow notifications so we can alert you when your session or break is complete.',
-          style: TextStyle(color: AppColors.textSecondary),
+        title: Text(l10n.translate('stay_focused_dialog_title'), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        content: Text(
+          l10n.translate('stay_focused_dialog_body'),
+          style: const TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Not now')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.translate('not_now'))),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            child: const Text('Allow'),
+            child: Text(l10n.translate('allow')),
           ),
         ],
       ),

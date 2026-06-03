@@ -4,6 +4,7 @@ import 'dart:ui';
 import '../timer_painter.dart' as painter;
 import '../../../providers/timer_provider.dart';
 import '../../../core/services/settings_service.dart';
+import '../../../core/services/l10n_service.dart';
 
 class TimerDisplay extends ConsumerWidget {
   final int remainingSeconds;
@@ -66,7 +67,7 @@ class TimerDisplay extends ConsumerWidget {
             ),
           ),
           
-          _buildCenterGlassPill(theme),
+                _buildCenterGlassPill(theme, ref),
         ],
       ),
     );
@@ -89,7 +90,7 @@ class TimerDisplay extends ConsumerWidget {
     );
   }
 
-  Widget _buildCenterGlassPill(ThemeData theme) {
+  Widget _buildCenterGlassPill(ThemeData theme, WidgetRef ref) {
     return Container(
       width: isConcentrationMode ? 280 : 250,
       height: isConcentrationMode ? 280 : 250,
@@ -118,7 +119,7 @@ class TimerDisplay extends ConsumerWidget {
                 _formatTime(remainingSeconds),
                 style: theme.textTheme.displayLarge?.copyWith(
                   fontSize: isConcentrationMode ? 92 : 80,
-                  fontWeight: FontWeight.w100, // Ultra-thin premium look
+                  fontWeight: FontWeight.w600, // Maximum visibility for production
                   letterSpacing: -4,
                   color: Colors.white,
                   fontFeatures: [const FontFeature.tabularFigures()],
@@ -132,12 +133,14 @@ class TimerDisplay extends ConsumerWidget {
                     letterSpacing: 4,
                     fontSize: 11,
                     fontWeight: FontWeight.w900,
-                    color: isRunning ? baseColor : Colors.white38,
+                    color: isRunning ? baseColor : Colors.white70,
                   ),
                   child: Text(
                     isRunning 
-                      ? (mode == TimerMode.focus ? '● FOCUSING' : '● RESTING')
-                      : 'READY TO FORGE',
+                      ? (mode == TimerMode.focus 
+                          ? ref.read(l10nServiceProvider.notifier).translate('focusing_status')
+                          : ref.read(l10nServiceProvider.notifier).translate('resting_status'))
+                      : ref.read(l10nServiceProvider.notifier).translate('ready_status'),
                   ),
                 ),
               ],

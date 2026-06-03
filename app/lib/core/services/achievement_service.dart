@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'auth_service.dart';
+import 'package:sqflite/sqflite.dart';
+import 'database_service.dart';
 
 class AchievementModel {
   final String id;
@@ -8,7 +8,7 @@ class AchievementModel {
   final String description;
   final String icon;
   final bool isUnlocked;
-  final double progress; 
+  final double progress;
   final double targetValue;
 
   AchievementModel({
@@ -21,13 +21,13 @@ class AchievementModel {
     this.targetValue = 1.0,
   });
 
-  factory AchievementModel.fromFirestore(Map<String, dynamic> data, String id) {
+  factory AchievementModel.fromMap(Map<String, dynamic> data) {
     return AchievementModel(
-      id: id,
+      id: data['id'],
       title: data['title'] ?? 'Achievement',
       description: data['description'] ?? 'Work towards this milestone',
       icon: data['icon'] ?? '🏆',
-      isUnlocked: data['isUnlocked'] ?? false,
+      isUnlocked: (data['is_unlocked'] ?? 0) == 1,
       progress: (data['progress'] ?? 0.0).toDouble(),
       targetValue: (data['targetValue'] ?? 1.0).toDouble(),
     );
@@ -35,24 +35,14 @@ class AchievementModel {
 }
 
 class AchievementService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Ref _ref;
 
   AchievementService(this._ref);
 
-  String? get _userId => _ref.read(authServiceProvider).currentUser?.uid;
-
-  CollectionReference get _achievementsCollection {
-    if (_userId == null) throw Exception('User not logged in');
-    return _firestore.collection('users').doc(_userId).collection('achievements');
-  }
-
-  Stream<List<AchievementModel>> getAchievements() {
-    if (_userId == null) return Stream.value([]);
-    
-    return _achievementsCollection.snapshots().map((snapshot) => snapshot.docs
-        .map((doc) => AchievementModel.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
-        .toList());
+  Future<List<AchievementModel>> getAchievements() async {
+    final db = await databaseService.database;
+    final List<Map<String, dynamic>> maps = await db.query('achievements');
+    return maps.map((map) => AchievementModel.fromMap(map)).toList();
   }
 
   Future<void> checkAchievements({
@@ -62,72 +52,59 @@ class AchievementService {
     required int completedTasks,
     bool isNightOwlSession = false,
   }) async {
-    if (_userId == null) return;
-
-    final batch = _firestore.batch();
-    bool hasChanges = false;
+    final db = await databaseService.database;
 
     // 1. Focus Apprentice (1st Session)
     if (totalFocusSessions >= 1) {
-      _prepareUnlock(batch, 'focus_apprentice', 'Focus Apprentice', 'Complete your first focus session to ignite the productivity flame.', '🔥');
-      hasChanges = true;
+      await _unlock(db, 'focus_apprentice', 'achievement_focus_apprentice_title', 'achievement_focus_apprentice_desc', '🔥');
     }
 
     // 2. Focused Novice (100 Minutes)
     if (totalFocusMinutes >= 100) {
-      _prepareUnlock(batch, 'focused_novice', 'Focused Novice', 'Successfully logged your first 100 minutes of deep focus.', '📜');
-      hasChanges = true;
+      await _unlock(db, 'focused_novice', 'achievement_focused_novice_title', 'achievement_focused_novice_desc', '📜');
     }
 
     // 3. Deep Work Master (1000 Minutes)
     if (totalFocusMinutes >= 1000) {
-      _prepareUnlock(batch, 'deep_work_master', 'Deep Work Master', 'Legendary! You have logged over 1000 minutes of deep focus.', '💎');
-      hasChanges = true;
+      await _unlock(db, 'deep_work_master', 'achievement_deep_work_master_title', 'achievement_deep_work_master_desc', '💎');
     }
 
     // 4. Consistency King (7 Day Streak)
     if (currentStreak >= 7) {
-      _prepareUnlock(batch, 'consistency_king', 'Consistency King', 'Maintained a focus streak for 7 days. You are unstoppable.', '👑');
-      hasChanges = true;
+      await _unlock(db, 'consistency_king', 'achievement_consistency_king_title', 'achievement_consistency_king_desc', '👑');
     }
 
     // 5. Task Crusher (50 Tasks)
     if (completedTasks >= 50) {
-      _prepareUnlock(batch, 'task_crusher', 'Task Crusher', 'Successfully crushed 50 productivity tasks in the Forge.', '🔨');
-      hasChanges = true;
+      await _unlock(db, 'task_crusher', 'achievement_task_crusher_title', 'achievement_task_crusher_desc', '🔨');
     }
 
     // 6. Night Owl Forger
     if (isNightOwlSession) {
-      _prepareUnlock(batch, 'night_owl', 'Night Owl Forger', 'Completed a focus session in the dead of night.', '🦉');
-      hasChanges = true;
+      await _unlock(db, 'night_owl', 'achievement_night_owl_title', 'achievement_night_owl_desc', '🦉');
     }
 
     // 7. Efficiency Elite (5 tasks in one day)
-    if (completedTasks >= 5) { // Needs better daily tracking logic but for now simple check
-       _prepareUnlock(batch, 'efficiency_elite', 'Efficiency Elite', 'Maximum output achieved in a single day.', '⚡');
-       hasChanges = true;
-    }
-
-    if (hasChanges) {
-      await batch.commit();
+    if (completedTasks >= 5) {
+       await _unlock(db, 'efficiency_elite', 'achievement_efficiency_elite_title', 'achievement_efficiency_elite_desc', '⚡');
     }
   }
 
-  void _prepareUnlock(WriteBatch batch, String id, String title, String desc, String icon) {
-    batch.set(_achievementsCollection.doc(id), {
+  Future<void> _unlock(dynamic db, String id, String title, String desc, String icon) async {
+    await db.insert('achievements', {
+      'id': id,
       'title': title,
       'description': desc,
       'icon': icon,
-      'isUnlocked': true,
+      'is_unlocked': 1,
       'progress': 1.0,
-      'unlockedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+      'unlocked_at': DateTime.now().toIso8601String(),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 }
 
 final achievementServiceProvider = Provider((ref) => AchievementService(ref));
 
-final achievementsStreamProvider = StreamProvider<List<AchievementModel>>((ref) {
-  return ref.watch(achievementServiceProvider).getAchievements();
+final achievementsFutureProvider = FutureProvider<List<AchievementModel>>((ref) async {
+  return await ref.watch(achievementServiceProvider).getAchievements();
 });

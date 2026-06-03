@@ -7,6 +7,7 @@ import 'dart:ui';
 import '../../core/constants/app_colors.dart';
 import '../../models/task_model.dart';
 import '../../core/services/task_service.dart';
+import '../../core/services/l10n_service.dart';
 import 'task_details_screen.dart';
 
 class TasksScreen extends ConsumerStatefulWidget {
@@ -22,12 +23,13 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tasksAsync = ref.watch(tasksStreamProvider);
+    final tasksAsync = ref.watch(tasksProvider);
+    final l10n = ref.watch(l10nServiceProvider.notifier);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Focus Tasks', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(l10n.translate('tasks'), style: const TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
@@ -36,7 +38,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: () => setState(() => _selectedCategory = null),
-            tooltip: 'Clear Filter',
           ),
         ],
       ),
@@ -49,11 +50,11 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
 
           return Column(
             children: [
-              _buildProgressHeader(theme, tasks.length, completedCount),
-              _buildCategoryChips(theme),
+              _buildProgressOverview(theme, tasks.length, completedCount),
+              _buildCategoryChips(theme, l10n),
               Expanded(
                 child: filteredTasks.isEmpty
-                    ? _buildEmptyState()
+                    ? _buildEmptyState(l10n)
                     : ListView.builder(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         itemCount: filteredTasks.length,
@@ -69,16 +70,15 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         error: (err, stack) => Center(child: Text('Error loading tasks: $err')),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddTaskDialog(context),
-        label: const Text('New Task', style: TextStyle(fontWeight: FontWeight.bold)),
+        onPressed: () => _showAddTaskDialog(context, l10n),
+        label: Text(l10n.translate('add_task'), style: const TextStyle(fontWeight: FontWeight.bold)),
         icon: const Icon(Icons.add),
         elevation: 4,
-        highlightElevation: 8,
       ),
     );
   }
 
-  Widget _buildProgressHeader(ThemeData theme, int total, int completed) {
+  Widget _buildProgressOverview(ThemeData theme, int total, int completed) {
     double progress = total == 0 ? 0 : completed / total;
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 8, 20, 16),
@@ -94,13 +94,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         ),
         borderRadius: BorderRadius.circular(32),
         border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.15)),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.primary.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          )
-        ],
       ),
       child: Row(
         children: [
@@ -161,18 +154,18 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.1, end: 0, curve: Curves.easeOutCubic);
   }
 
-  Widget _buildCategoryChips(ThemeData theme) {
+  Widget _buildCategoryChips(ThemeData theme, L10nService l10n) {
     return SizedBox(
       height: 44,
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         children: [
-          _categoryChip(null, 'All', Icons.grid_view_rounded, theme),
-          _categoryChip(TaskCategory.work, 'Work', Icons.work_rounded, theme),
-          _categoryChip(TaskCategory.study, 'Study', Icons.school_rounded, theme),
-          _categoryChip(TaskCategory.personal, 'Personal', Icons.self_improvement_rounded, theme),
-          _categoryChip(TaskCategory.other, 'Other', Icons.more_horiz_rounded, theme),
+          _categoryChip(null, l10n.translate('cat_all'), Icons.grid_view_rounded, theme),
+          _categoryChip(TaskCategory.work, l10n.translate('cat_work'), Icons.work_rounded, theme),
+          _categoryChip(TaskCategory.study, l10n.translate('cat_study'), Icons.school_rounded, theme),
+          _categoryChip(TaskCategory.personal, l10n.translate('cat_personal'), Icons.self_improvement_rounded, theme),
+          _categoryChip(TaskCategory.other, l10n.translate('cat_other'), Icons.more_horiz_rounded, theme),
         ],
       ),
     );
@@ -195,9 +188,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
           border: Border.all(
             color: isSelected ? theme.colorScheme.primary : Colors.white.withValues(alpha: 0.08),
           ),
-          boxShadow: isSelected ? [
-            BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))
-          ] : [],
         ),
         child: Row(
           children: [
@@ -268,14 +258,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                   : Colors.white.withValues(alpha: 0.05),
               width: 1.0,
             ),
-            boxShadow: [
-              if (!task.isCompleted)
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                )
-            ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(28),
@@ -293,9 +275,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                           decoration: BoxDecoration(
                             color: priorityColor,
                             borderRadius: BorderRadius.circular(4),
-                            boxShadow: [
-                              BoxShadow(color: priorityColor.withValues(alpha: 0.5), blurRadius: 10)
-                            ],
                           ),
                         ),
                         const SizedBox(width: 18),
@@ -318,7 +297,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                                 children: [
                                   _buildSmallTag(task.category.name.toUpperCase(), Colors.white.withValues(alpha: 0.05)),
                                   const SizedBox(width: 12),
-                                  Icon(Icons.timer_outlined, size: 14, color: AppColors.textSecondary),
+                                  const Icon(Icons.timer_outlined, size: 14, color: AppColors.textSecondary),
                                   const SizedBox(width: 5),
                                   Text(
                                     '${task.completedPomodoros} / ${task.estimatedPomodoros} Forge Sessions',
@@ -369,7 +348,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
       ).animate().scale();
     }
     return IconButton(
-      icon: const Icon(Icons.circle_outlined, color: Colors.white24, size: 28),
+      icon: const Icon(Icons.circle_outlined, color: Colors.white60, size: 28),
       onPressed: () {
         HapticFeedback.lightImpact();
         ref.read(taskServiceProvider).updateTask(task.copyWith(isCompleted: true));
@@ -390,9 +369,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                   ? theme.colorScheme.primary 
                   : Colors.white.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(10),
-              boxShadow: i < task.completedPomodoros ? [
-                BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.4), blurRadius: 6)
-              ] : [],
             ),
           ),
         ),
@@ -400,7 +376,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(L10nService l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -414,11 +390,9 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
             child: const Icon(Icons.auto_awesome_outlined, size: 64, color: Colors.white10),
           ),
           const SizedBox(height: 24),
-          const Text('All clear in the Forge', style: TextStyle(color: Colors.white54, fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          const Text('Create a task to start your focus journey.', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+          Text(l10n.translate('no_tasks'), style: const TextStyle(color: Colors.white70, fontSize: 18, fontWeight: FontWeight.bold)),
           if (_selectedCategory != null)
-            TextButton(onPressed: () => setState(() => _selectedCategory = null), child: const Text('Show all categories')),
+            TextButton(onPressed: () => setState(() => _selectedCategory = null), child: const Text('Show all categories', style: TextStyle(color: AppColors.primary))),
         ],
       ),
     );
@@ -428,7 +402,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     return showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1F36),
+        backgroundColor: AppColors.background,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: const Text('Delete Task?', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         content: Text('Are you sure you want to remove "$title"?', style: const TextStyle(color: AppColors.textSecondary)),
@@ -444,7 +418,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     );
   }
 
-  void _showAddTaskDialog(BuildContext context) {
+  void _showAddTaskDialog(BuildContext context, L10nService l10n) {
     final titleController = TextEditingController();
     TaskCategory selectedCat = TaskCategory.work;
     TaskPriority selectedPriority = TaskPriority.medium;
@@ -467,15 +441,15 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
             children: [
               Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(2)))),
               const SizedBox(height: 24),
-              const Text('Forge New Task', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text(l10n.translate('add_task'), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
               const SizedBox(height: 20),
               TextField(
                 controller: titleController,
                 autofocus: true,
                 style: const TextStyle(color: Colors.white, fontSize: 18),
                 decoration: InputDecoration(
-                  hintText: 'What are we focusing on?',
-                  hintStyle: const TextStyle(color: Colors.white24),
+                  hintText: l10n.translate('task_title'),
+                  hintStyle: const TextStyle(color: Colors.white54),
                   filled: true,
                   fillColor: Colors.white.withValues(alpha: 0.05),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
@@ -483,7 +457,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text('Category & Priority', style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1)),
+              Text(l10n.translate('category') + ' & ' + l10n.translate('priority'), style: const TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1)),
               const SizedBox(height: 12),
               Row(
                 children: [
@@ -508,7 +482,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Pomodoros Estimated', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
+                  Text(l10n.translate('estimated_pomos'), style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
                   Container(
                     decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(16)),
                     child: Row(
@@ -542,7 +516,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),
-                  child: const Text('START FORGING', style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1)),
+                  child: Text(l10n.translate('create').toUpperCase(), style: const TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1)),
                 ),
               ),
             ],

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../providers/timer_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/services/l10n_service.dart';
 
-class ModeSelector extends StatelessWidget {
+class ModeSelector extends ConsumerWidget {
   final TimerMode currentMode;
   final Function(TimerMode) onModeChanged;
 
@@ -13,8 +15,9 @@ class ModeSelector extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = ref.read(l10nServiceProvider.notifier);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -28,19 +31,19 @@ class ModeSelector extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _ModeButton(
-            title: '🍅  Focus',
+            title: '🍅  ${l10n.translate('focus')}',
             isSelected: currentMode == TimerMode.focus,
             onTap: () => onModeChanged(TimerMode.focus),
             activeColor: theme.colorScheme.primary,
           ),
           _ModeButton(
-            title: '☕  Short',
+            title: '☕  ${l10n.translate('short_mode')}',
             isSelected: currentMode == TimerMode.shortBreak,
             onTap: () => onModeChanged(TimerMode.shortBreak),
             activeColor: AppColors.success,
           ),
           _ModeButton(
-            title: '🌙  Long',
+            title: '🌙  ${l10n.translate('long_mode')}',
             isSelected: currentMode == TimerMode.longBreak,
             onTap: () => onModeChanged(TimerMode.longBreak),
             activeColor: Colors.lightBlueAccent,

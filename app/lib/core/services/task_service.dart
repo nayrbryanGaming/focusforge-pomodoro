@@ -1,57 +1,66 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'auth_service.dart';
+import 'database_service.dart';
 import '../../models/task_model.dart';
+import 'package:sqflite/sqflite.dart';
 
 class TaskService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final Ref _ref;
+  final DatabaseService _dbService = databaseService;
 
-  TaskService(this._ref);
-
-  String? get _userId => _ref.read(authServiceProvider).currentUser?.uid;
-
-  CollectionReference get _tasksCollection => _firestore.collection('tasks');
-
-  Stream<List<TaskModel>> getTasks() {
-    if (_userId == null) return Stream.value([]);
-    
-    return _tasksCollection
-        .where('userId', isEqualTo: _userId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => TaskModel.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
-            .toList());
+  Future<List<TaskModel>> getTasks() async {
+    final db = await _dbService.database;
+    final List<Map<String, dynamic>> maps = await db.query('tasks', orderBy: 'created_at DESC');
+    return List.generate(maps.length, (i) => TaskModel.fromMap(maps[i]));
   }
 
   Future<void> addTask(TaskModel task) async {
-    if (_userId == null) return;
-    await _tasksCollection.add(task.toFirestore()..['userId'] = _userId);
+    final db = await _dbService.database;
+    await db.insert(
+      'tasks',
+      task.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<void> updateTask(TaskModel task) async {
-    await _tasksCollection.doc(task.id).update(task.toFirestore());
+    final db = await _dbService.database;
+    await db.update(
+      'tasks',
+      task.toMap(),
+      where: 'id = ?',
+      whereArgs: [task.id],
+    );
   }
 
   Future<void> deleteTask(String taskId) async {
-    await _tasksCollection.doc(taskId).delete();
+    final db = await _dbService.database;
+    await db.delete(
+      'tasks',
+      where: 'id = ?',
+      whereArgs: [taskId],
+    );
   }
 
   Future<void> toggleTaskCompletion(String taskId, bool isCompleted) async {
-    await _tasksCollection.doc(taskId).update({'completed': isCompleted});
+    final db = await _dbService.database;
+    await db.update(
+      'tasks',
+      {'is_completed': isCompleted ? 1 : 0},
+      where: 'id = ?',
+      whereArgs: [taskId],
+    );
     
-    // Update stats count
-    if (_userId != null) {
-      await _firestore.collection('stats').doc(_userId).set({
-        'completedTasks': FieldValue.increment(isCompleted ? 1 : -1),
-      }, SetOptions(merge: true));
-    }
+    // Update daily stats locally
+    final today = DateTime.now().toIso8601String().split('T')[0];
+    await db.rawUpdate('''
+      INSERT INTO stats (date, tasks_completed) 
+      VALUES (?, ?) 
+      ON CONFLICT(date) DO UPDATE SET tasks_completed = tasks_completed + ?
+    ''', [today, isCompleted ? 1 : 0, isCompleted ? 1 : -1]);
   }
 }
 
-final taskServiceProvider = Provider((ref) => TaskService(ref));
+final taskServiceProvider = Provider((ref) => TaskService());
 
-final tasksStreamProvider = StreamProvider<List<TaskModel>>((ref) {
+final tasksProvider = FutureProvider<List<TaskModel>>((ref) {
   return ref.watch(taskServiceProvider).getTasks();
 });

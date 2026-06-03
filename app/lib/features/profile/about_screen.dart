@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/services/l10n_service.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:ui';
 
-class AboutScreen extends StatelessWidget {
+class AboutScreen extends ConsumerWidget {
   const AboutScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = ref.watch(l10nServiceProvider.notifier);
+    
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
@@ -28,11 +32,11 @@ class AboutScreen extends StatelessWidget {
           
           CustomScrollView(
             slivers: [
-              const SliverAppBar(
+              SliverAppBar(
                 expandedHeight: 0,
                 pinned: true,
                 backgroundColor: Colors.transparent,
-                title: Text('MASTERPIECE SPECS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2)),
+                title: Text(l10n.translate('about_specs'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2)),
                 centerTitle: true,
               ),
               SliverToBoxAdapter(
@@ -85,9 +89,9 @@ class AboutScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
                         ),
-                        child: const Text(
-                          'VERSION 1.3.1+18',
-                          style: TextStyle(
+                        child: Text(
+                          '${l10n.translate('version').toUpperCase()} 1.3.1 (OFFLINE)',
+                          style: const TextStyle(
                             color: AppColors.primary,
                             fontSize: 10,
                             fontWeight: FontWeight.w900,
@@ -98,32 +102,32 @@ class AboutScreen extends StatelessWidget {
                       const SizedBox(height: 60),
                       
                       _buildMasterpieceCard(
-                        title: 'THE PROTOCOL',
-                        content: 'FocusForge is a clinical-grade productivity environment designed to transmute digital distraction into unstoppable deep focus.',
+                        title: l10n.translate('the_protocol'),
+                        content: l10n.translate('the_protocol_desc'),
                         icon: Icons.auto_awesome_mosaic_rounded,
                       ).animate().fadeIn(delay: 200.ms).moveY(begin: 20, end: 0),
                       
                       const SizedBox(height: 20),
                       
                       _buildMasterpieceCard(
-                        title: 'CORE ARCHITECTURE',
-                        content: 'Built on the Flutter 3.x stack with Riverpod state management and a clinical Clean Architecture foundation.',
+                        title: l10n.translate('core_architecture'),
+                        content: l10n.translate('core_architecture_desc'),
                         icon: Icons.layers_rounded,
                       ).animate().fadeIn(delay: 400.ms).moveY(begin: 20, end: 0),
                       
                       const SizedBox(height: 20),
                       
                       _buildMasterpieceCard(
-                        title: 'DATA SOVEREIGNTY',
-                        content: 'Your focus data is yours. We implement high-encryption Firestore security and strict data minimization principles.',
+                        title: l10n.translate('data_sovereignty_about'),
+                        content: l10n.translate('data_sovereignty_about_desc'),
                         icon: Icons.security_rounded,
                       ).animate().fadeIn(delay: 600.ms).moveY(begin: 20, end: 0),
                       
                       const SizedBox(height: 60),
                       
-                      const Text(
-                        'FORGED BY',
-                        style: TextStyle(
+                      Text(
+                        l10n.translate('forged_by'),
+                        style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
@@ -142,7 +146,7 @@ class AboutScreen extends StatelessWidget {
                       const SizedBox(height: 60),
                       
                       const Opacity(
-                        opacity: 0.3,
+                        opacity: 0.6,
                         child: Text(
                           '© 2026 FOCUSFORGE PROTOCOL.\nALL RIGHTS RESERVED.',
                           textAlign: TextAlign.center,

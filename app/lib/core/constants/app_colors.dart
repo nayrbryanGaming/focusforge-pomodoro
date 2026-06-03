@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
   // Primary - The Forge Flame
@@ -9,10 +8,10 @@ class AppColors {
   static const Color primaryMuted = Color(0xFFC34A1B);
 
   // Background - The Deep Forge
-  static const Color background = Color(0xFF0B0F1A); 
-  static const Color surface = Color(0xFF161C2C);
-  static const Color surfaceHighlight = Color(0xFF1F293F);
-  static const Color surfaceElevated = Color(0xFF252F48);
+  static const Color background = Color(0xFF0F172A); 
+  static const Color surface = Color(0xFF1E293B);
+  static const Color surfaceHighlight = Color(0xFF334155);
+  static const Color surfaceElevated = Color(0xFF475569);
 
   // Accent - The Glowing Ember
   static const Color accent = Color(0xFFFFD166); 
@@ -24,9 +23,9 @@ class AppColors {
   static const Color error = Color(0xFFEF4444);
   
   // Text
-  static const Color textPrimary = Color(0xFFF1F5F9);
-  static const Color textSecondary = Color(0xFF94A3B8);
-  static const Color textMuted = Color(0xFF64748B);
+  static const Color textPrimary = Color(0xFFFFFFFF); // Pure white for maximum visibility
+  static const Color textSecondary = Color(0xFFCBD5E1); // Lighter gray for secondary
+  static const Color textMuted = Color(0xFF94A3B8);
 
   // Decorative
   static final Color glass = Colors.white.withValues(alpha: 0.05);

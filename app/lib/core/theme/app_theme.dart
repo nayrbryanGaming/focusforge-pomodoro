@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 
 enum TimerTheme { focus, shortBreak, longBreak }
@@ -57,28 +56,33 @@ class AppTheme {
         surfaceContainer: AppColors.surfaceHighlight, // M3 surface Container
         error: AppColors.error,
       ),
-      textTheme: GoogleFonts.outfitTextTheme(ThemeData.dark().textTheme).copyWith(
-        displayLarge: GoogleFonts.outfit(
+      textTheme: ThemeData.dark().textTheme.copyWith(
+        displayLarge: const TextStyle(
           color: AppColors.textPrimary,
           fontWeight: FontWeight.w800,
           letterSpacing: -1.5,
+          fontSize: 48,
         ),
-        headlineMedium: GoogleFonts.outfit(
+        headlineMedium: const TextStyle(
           color: AppColors.textPrimary,
           fontWeight: FontWeight.w700,
           letterSpacing: -0.5,
+          fontSize: 24,
         ),
-        titleLarge: GoogleFonts.outfit(
+        titleLarge: const TextStyle(
           color: AppColors.textPrimary,
           fontWeight: FontWeight.w600,
+          fontSize: 20,
         ),
-        bodyLarge: GoogleFonts.inter(
+        bodyLarge: const TextStyle(
           color: AppColors.textPrimary,
           height: 1.5,
+          fontSize: 16,
         ),
-        bodyMedium: GoogleFonts.inter(
+        bodyMedium: const TextStyle(
           color: AppColors.textSecondary,
           height: 1.5,
+          fontSize: 14,
         ),
       ),
       cardTheme: CardThemeData(

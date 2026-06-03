@@ -45,25 +45,25 @@ class SettingsScreen extends ConsumerWidget {
                   const SizedBox(height: 20),
                   _buildSectionCard(
                     context,
-                    title: 'TIMER CONFIGURATION',
+                    title: l10n.translate('timer_configuration'),
                     icon: Icons.timer_outlined,
                     children: [
                       _buildDurationItem(
-                        'Focus Session', 
+                        l10n.translate('focus'), 
                         settings.focusDuration, 
-                        'Optimal forge time',
+                        l10n.translate('forge_duration'),
                         (val) => ref.read(settingsServiceProvider.notifier).setFocusDuration(val)
                       ),
                       _buildDurationItem(
-                        'Short Break', 
+                        l10n.translate('short_break'), 
                         settings.shortBreakDuration, 
-                        'Quick recharge',
+                        l10n.translate('rest_duration'),
                         (val) => ref.read(settingsServiceProvider.notifier).setShortBreakDuration(val)
                       ),
                       _buildDurationItem(
-                        'Long Break', 
+                        l10n.translate('long_break'), 
                         settings.longBreakDuration, 
-                        'Deep restoration',
+                        l10n.translate('deep_rest'),
                         (val) => ref.read(settingsServiceProvider.notifier).setLongBreakDuration(val)
                       ),
                     ],
@@ -71,26 +71,26 @@ class SettingsScreen extends ConsumerWidget {
                   const SizedBox(height: 20),
                   _buildSectionCard(
                     context,
-                    title: 'PREFERENCES',
+                    title: l10n.translate('preferences'),
                     icon: Icons.tune_rounded,
                     children: [
                       _buildSwitchItem(
-                        'Audio Alerts',
-                        'Play forge mastery sounds',
+                        l10n.translate('audio_alerts'),
+                        l10n.translate('audio_alerts_sub'),
                         settings.isSoundEnabled,
                         (val) => ref.read(settingsServiceProvider.notifier).setSoundEnabled(val),
                         AppColors.primary,
                       ),
                       _buildSwitchItem(
-                        'Haptic Feedback',
-                        'Tactile focus pulses',
+                        l10n.translate('haptic_feedback'),
+                        l10n.translate('haptic_feedback_sub'),
                         settings.isHapticEnabled,
                         (val) => ref.read(settingsServiceProvider.notifier).setHapticEnabled(val),
                         AppColors.primary,
                       ),
                       _buildSwitchItem(
                         l10n.translate('power_saving'),
-                        'Disable intensive animations',
+                        l10n.translate('power_saving_sub'),
                         settings.isPowerSavingMode,
                         (val) => ref.read(settingsServiceProvider.notifier).setPowerSavingMode(val),
                         AppColors.accent,
@@ -100,13 +100,13 @@ class SettingsScreen extends ConsumerWidget {
                   const SizedBox(height: 20),
                   _buildSectionCard(
                     context,
-                    title: 'GLOBALIZATION',
+                    title: l10n.translate('language').toUpperCase(),
                     icon: Icons.language_rounded,
                     children: [
                       _buildActionItem(
-                        'App Language',
-                        currentLang == AppLanguage.en ? 'English (US)' : 'Bahasa Indonesia',
-                        () => _showLanguagePicker(context, ref),
+                        l10n.translate('language'),
+                        currentLang == AppLanguage.en ? 'English' : 'Bahasa Indonesia',
+                        () => _showLanguagePicker(context, ref, l10n),
                         Icons.translate_rounded,
                       ),
                     ],
@@ -114,12 +114,12 @@ class SettingsScreen extends ConsumerWidget {
                   const SizedBox(height: 20),
                   _buildSectionCard(
                     context,
-                    title: 'SYSTEM',
+                    title: l10n.translate('system'),
                     icon: Icons.info_outline_rounded,
                     children: [
                       _buildActionItem(
                         l10n.translate('about'),
-                        'Version 1.3.1+18 (Masterpiece Build)',
+                        '${l10n.translate('version')} 1.3.1 (Stable Version)',
                         () => Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const AboutScreen()),
@@ -141,9 +141,9 @@ class SettingsScreen extends ConsumerWidget {
   Widget _buildSectionCard(BuildContext context, {required String title, required IconData icon, required List<Widget> children}) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.5),
+        color: AppColors.surface.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
@@ -152,8 +152,8 @@ class SettingsScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.02),
-                border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
+                color: Colors.white.withValues(alpha: 0.05),
+                border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
               ),
               child: Row(
                 children: [
@@ -195,7 +195,7 @@ class SettingsScreen extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.2),
+              color: Colors.black.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(15),
             ),
             child: Row(
@@ -219,7 +219,7 @@ class SettingsScreen extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.05),
+          color: Colors.white.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, size: 14, color: Colors.white),
@@ -268,7 +268,7 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  void _showLanguagePicker(BuildContext context, WidgetRef ref) {
+  void _showLanguagePicker(BuildContext context, WidgetRef ref, L10nService l10n) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -281,11 +281,11 @@ class SettingsScreen extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('SELECT DIALECT', style: TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 2)),
+            Text(l10n.translate('language').toUpperCase(), style: const TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 2)),
             const SizedBox(height: 32),
-            _buildLangOption(context, ref, 'English (US)', AppLanguage.en),
+            _buildLangOption(context, ref, 'English', AppLanguage.en),
             const SizedBox(height: 12),
-            _buildLangOption(context, ref, 'Bahasa Indonesia', AppLanguage.id),
+            _buildLangOption(context, ref, 'Indonesia', AppLanguage.id),
             const SizedBox(height: 24),
           ],
         ),
