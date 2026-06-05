@@ -13,7 +13,6 @@ class SettingsService extends StateNotifier<SettingsState> {
   static const String _sessionsBeforeLongBreakKey = 'sessions_before_long_break';
   static const String _isSoundEnabledKey = 'is_sound_enabled';
   static const String _isHapticEnabledKey = 'is_haptic_enabled';
-  static const String _isDarkModeKey = 'is_dark_mode';
   static const String _isPowerSavingModeKey = 'is_power_saving_mode';
 
   // State Updates

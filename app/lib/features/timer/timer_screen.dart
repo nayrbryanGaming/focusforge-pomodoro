@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:math';
 
@@ -248,8 +247,8 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
   }
 
   Widget _buildActiveTaskPill(String? activeTaskId, String? activeTaskTitle, Color baseColor, L10nService l10n) {
-    return FadeInUp(
-      delay: const Duration(milliseconds: 400),
+    return Animate(
+      effects: [FadeEffect(delay: 400.ms), MoveEffect(begin: const Offset(0, 20), end: const Offset(0, 0), delay: 400.ms)],
       child: GestureDetector(
         onTap: _showTaskPicker,
         child: Container(

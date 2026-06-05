@@ -50,7 +50,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
 
           return Column(
             children: [
-              _buildProgressOverview(theme, tasks.length, completedCount),
+              _buildProgressOverview(theme, tasks.length, completedCount, l10n),
               _buildCategoryChips(theme, l10n),
               Expanded(
                 child: filteredTasks.isEmpty
@@ -78,7 +78,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     );
   }
 
-  Widget _buildProgressOverview(ThemeData theme, int total, int completed) {
+  Widget _buildProgressOverview(ThemeData theme, int total, int completed, dynamic l10n) {
     double progress = total == 0 ? 0 : completed / total;
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 8, 20, 16),
@@ -101,8 +101,8 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Daily Forge Progress',
+                  Text(
+                    l10n.translate('daily_forge_progress'),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -225,14 +225,15 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         ),
         child: const Icon(Icons.delete_outline, color: Colors.redAccent),
       ),
-      confirmDismiss: (dir) async {
-        final result = await _showDeleteConfirm(task.title);
-        if (result == true) {
-          await ref.read(taskServiceProvider).deleteTask(task.id);
-          return true;
-        }
-        return false;
-      },
+        confirmDismiss: (dir) async {
+          final result = await _showDeleteConfirm(task.title);
+          if (result == true) {
+            await ref.read(taskServiceProvider).deleteTask(task.id);
+            ref.invalidate(tasksProvider);
+            return true;
+          }
+          return false;
+        },
       child: GestureDetector(
         onTap: () => Navigator.push(
           context,
@@ -351,7 +352,9 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
       icon: const Icon(Icons.circle_outlined, color: Colors.white60, size: 28),
       onPressed: () {
         HapticFeedback.lightImpact();
-        ref.read(taskServiceProvider).updateTask(task.copyWith(isCompleted: true));
+        ref.read(taskServiceProvider).updateTask(task.copyWith(isCompleted: true)).then((_) {
+          ref.invalidate(tasksProvider);
+        });
       },
     );
   }
@@ -508,6 +511,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                         priority: selectedPriority,
                       );
                       await ref.read(taskServiceProvider).addTask(newTask);
+                      ref.invalidate(tasksProvider);
                       if (ctx.mounted) Navigator.pop(ctx);
                     }
                   },

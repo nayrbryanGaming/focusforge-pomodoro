@@ -36,11 +36,11 @@ class StatsScreen extends ConsumerWidget {
             children: [
               _buildProgressOverview(theme, stats, l10n),
               const SizedBox(height: 32),
-              _buildSectionHeader('CONSISTENCY HEATMAP', Icons.grid_view_rounded),
+              _buildSectionHeader(l10n.translate('consistency_heatmap'), Icons.grid_view_rounded),
               const SizedBox(height: 16),
               _buildFocusHeatmap(context, ref),
               const SizedBox(height: 32),
-              _buildSectionHeader('WEEKLY FOCUS INTENSITY', Icons.bar_chart_rounded),
+              _buildSectionHeader(l10n.translate('weekly_focus_intensity'), Icons.bar_chart_rounded),
               const SizedBox(height: 16),
               intensityAsync.when(
                 data: (intensity) => _buildWeeklyChart(context, primaryColor, intensity),
@@ -48,7 +48,7 @@ class StatsScreen extends ConsumerWidget {
                 error: (_, __) => _buildChartError(),
               ),
               const SizedBox(height: 32),
-              _buildSectionHeader('PRODUCTIVITY METRICS', Icons.insights_rounded),
+              _buildSectionHeader(l10n.translate('productivity_metrics'), Icons.insights_rounded),
               const SizedBox(height: 16),
               GridView.count(
                 shrinkWrap: true,
@@ -59,29 +59,29 @@ class StatsScreen extends ConsumerWidget {
                 childAspectRatio: 1.1,
                 children: [
                   _buildMetricCard(
-                    'Focus Time', 
+                    l10n.translate('total_focus_time'), 
                     '${(stats.totalFocusSeconds / 3600).toStringAsFixed(1)}h', 
                     Icons.timer_outlined, 
                     primaryColor, 
                     400
                   ),
                   _buildMetricCard(
-                    'Forge Points', 
+                    l10n.translate('forge_points'), 
                     '${stats.totalPoints}', 
                     Icons.bolt, 
                     AppColors.accent, 
                     500
                   ),
                   _buildMetricCard(
-                    'Current Streak', 
-                    '${stats.dailyStreak} Days', 
+                    l10n.translate('current_streak'), 
+                    '${stats.dailyStreak} ${l10n.translate('days')}', 
                     Icons.local_fire_department_rounded, 
                     Colors.orangeAccent, 
                     600
                   ),
                   _buildMetricCard(
-                    'Forge Level', 
-                    'Level ${stats.level}', 
+                    l10n.translate('forge_level'), 
+                    '${l10n.translate('level')} ${stats.level}', 
                     Icons.military_tech_outlined, 
                     AppColors.success, 
                     700
@@ -184,9 +184,9 @@ class StatsScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildSimpleStat('Sessions', stats.completedSessions.toString()),
-              _buildSimpleStat('Tasks Done', stats.completedTasks.toString()),
-              _buildSimpleStat('Forge Level', stats.level.toString()),
+              _buildSimpleStat(l10n.translate('sessions_completed'), stats.completedSessions.toString()),
+              _buildSimpleStat(l10n.translate('tasks_done'), stats.completedTasks.toString()),
+              _buildSimpleStat(l10n.translate('forge_level'), stats.level.toString()),
             ],
           ),
         ],

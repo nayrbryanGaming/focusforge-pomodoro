@@ -3,11 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/notification_service.dart';
-import '../../main.dart';
-import 'package:animate_do/animate_do.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class PermissionPrimingScreen extends ConsumerStatefulWidget {
-  const PermissionPrimingScreen({super.key});
+  final VoidCallback? onComplete;
+  
+  const PermissionPrimingScreen({super.key, this.onComplete});
 
   @override
   ConsumerState<PermissionPrimingScreen> createState() => _PermissionPrimingScreenState();
@@ -23,9 +24,7 @@ class _PermissionPrimingScreenState extends ConsumerState<PermissionPrimingScree
     await ref.read(notificationServiceProvider).requestPermissions();
     
     if (mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
-      );
+      widget.onComplete?.call();
     }
   }
 
@@ -57,7 +56,8 @@ class _PermissionPrimingScreenState extends ConsumerState<PermissionPrimingScree
                 children: [
                   const Spacer(),
                   
-                  FadeInDown(
+                  Animate(
+                    effects: const [FadeEffect(), MoveEffect(begin: Offset(0, -20), end: Offset.zero)],
                     child: Container(
                       width: 140,
                       height: 140,
@@ -90,7 +90,8 @@ class _PermissionPrimingScreenState extends ConsumerState<PermissionPrimingScree
                   
                   const SizedBox(height: 48),
                   
-                  FadeInUp(
+                  Animate(
+                    effects: const [FadeEffect(), MoveEffect(begin: Offset(0, 20), end: Offset.zero)],
                     child: Text(
                       'Enable Focus Alerts',
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -104,8 +105,8 @@ class _PermissionPrimingScreenState extends ConsumerState<PermissionPrimingScree
                   
                   const SizedBox(height: 16),
                   
-                  FadeInUp(
-                    delay: const Duration(milliseconds: 200),
+                  Animate(
+                    effects: [FadeEffect(delay: 200.ms), MoveEffect(begin: const Offset(0, 20), end: Offset.zero, delay: 200.ms)],
                     child: const Text(
                       'FocusForge needs notification access to alert you when your focus sessions and breaks are complete.',
                       style: TextStyle(
@@ -120,8 +121,8 @@ class _PermissionPrimingScreenState extends ConsumerState<PermissionPrimingScree
                   const Spacer(),
                   
                   // Masterpiece Glassmorphic feature card
-                  FadeInUp(
-                    delay: const Duration(milliseconds: 300),
+                  Animate(
+                    effects: [FadeEffect(delay: 300.ms), MoveEffect(begin: const Offset(0, 20), end: Offset.zero, delay: 300.ms)],
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(32),
@@ -173,8 +174,8 @@ class _PermissionPrimingScreenState extends ConsumerState<PermissionPrimingScree
                   
                   const Spacer(),
                   
-                  FadeInUp(
-                    delay: const Duration(milliseconds: 400),
+                  Animate(
+                    effects: [FadeEffect(delay: 400.ms), MoveEffect(begin: const Offset(0, 20), end: Offset.zero, delay: 400.ms)],
                     child: SizedBox(
                       width: double.infinity,
                       height: 60,
@@ -204,13 +205,11 @@ class _PermissionPrimingScreenState extends ConsumerState<PermissionPrimingScree
                   
                   const SizedBox(height: 20),
                   
-                  FadeIn(
-                    delay: const Duration(milliseconds: 600),
+                  Animate(
+                    effects: [FadeEffect(delay: 600.ms)],
                     child: TextButton(
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
-                        );
+                        widget.onComplete?.call();
                       },
                       child: const Text(
                         'Maybe Later',

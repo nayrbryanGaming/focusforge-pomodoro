@@ -16,11 +16,10 @@ import 'core/services/toast_service.dart';
 import 'core/services/settings_service.dart';
 import 'core/services/l10n_service.dart';
 import 'core/services/review_service.dart';
-import 'core/services/auth_service.dart';
 import 'core/constants/app_colors.dart';
 import 'providers/onboarding_provider.dart';
 
-const String _kOnboardingDone = 'onboarding_complete_v2';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

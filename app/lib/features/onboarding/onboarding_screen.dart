@@ -57,11 +57,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.fastOutSlowIn,
       );
     } else {
-      widget.onComplete?.call();
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 800),
-          pageBuilder: (_, __, ___) => const PermissionPrimingScreen(),
+          pageBuilder: (_, __, ___) => PermissionPrimingScreen(onComplete: widget.onComplete),
           transitionsBuilder: (_, animation, __, child) {
             return FadeTransition(opacity: animation, child: child);
           },

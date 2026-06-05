@@ -258,7 +258,6 @@ class TimerNotifier extends Notifier<TimerState> {
         }
 
         // Get updated stats for achievement check
-        final todayStats = await ref.read(todayStatsProvider.future);
         final totalFocusSeconds = await statsService.getTotalFocusTime();
         final allTasks = await ref.read(tasksProvider.future);
         completedTasks = allTasks.where((t) => t.isCompleted).length;

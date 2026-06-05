@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/l10n_service.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'dart:ui';
+
 
 class AboutScreen extends ConsumerWidget {
   const AboutScreen({super.key});

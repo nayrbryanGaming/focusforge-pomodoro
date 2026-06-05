@@ -33,7 +33,6 @@ dependencies:
   flutter_markdown: ^0.6.18+4
 
   # Animations
-  animate_do: ^3.3.4
   flutter_animate: ^4.5.0
 
   # Notifications & Alerts
@@ -41,8 +40,6 @@ dependencies:
   permission_handler: ^11.3.1
   timezone: ^0.9.2
 
-  # Audio
-  audioplayers: ^5.2.1
 
   # Onboarding & Splash
   flutter_native_splash: ^2.4.0
@@ -53,7 +50,6 @@ dependencies:
 
   # In-app review prompt
   in_app_review: ^2.0.9
-  lottie: ^3.3.3
 
 dev_dependencies:
   flutter_test:

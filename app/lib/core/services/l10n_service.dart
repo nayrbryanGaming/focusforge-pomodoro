@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -163,6 +162,16 @@ class L10nService extends StateNotifier<AppLanguage> {
     'achievement_night_owl_desc': 'Completed a focus session in the dead of night.',
     'achievement_efficiency_elite_title': 'Efficiency Elite',
     'achievement_efficiency_elite_desc': 'Maximum output achieved in a single day.',
+    // Stats screen
+    'consistency_heatmap': 'CONSISTENCY HEATMAP',
+    'weekly_focus_intensity': 'WEEKLY FOCUS INTENSITY',
+    'productivity_metrics': 'PRODUCTIVITY METRICS',
+    'forge_points': 'Forge Points',
+    'current_streak': 'Current Streak',
+    'forge_level': 'Forge Level',
+    'days': 'Days',
+    'level': 'Level',
+    'tasks_done': 'Tasks Done',
   };
 
   static const Map<String, String> _indonesian = {
@@ -303,6 +312,16 @@ class L10nService extends StateNotifier<AppLanguage> {
     'achievement_night_owl_desc': 'Menyelesaikan sesi fokus di tengah malam.',
     'achievement_efficiency_elite_title': 'Elite Efisiensi',
     'achievement_efficiency_elite_desc': 'Output maksimal dicapai dalam satu hari.',
+    // Stats screen
+    'consistency_heatmap': 'PETA KONSISTENSI',
+    'weekly_focus_intensity': 'INTENSITAS FOKUS MINGGUAN',
+    'productivity_metrics': 'METRIK PRODUKTIVITAS',
+    'forge_points': 'Poin Tempa',
+    'current_streak': 'Rentetan Saat Ini',
+    'forge_level': 'Level Tempa',
+    'days': 'Hari',
+    'level': 'Level',
+    'tasks_done': 'Tugas Selesai',
   };
 }
 
