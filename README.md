@@ -1,58 +1,37 @@
 # FocusForge
+> Forge Deep Focus. Build Unstoppable Productivity.
 
-> **Forge Deep Focus. Build Unstoppable Productivity.** — A 100% offline Pomodoro timer with task tracking, analytics, and gamification. [Download APK](https://github.com/nayrbryanGaming/focusforge-pomodoro/releases)
+[Live Demo](https://focusforge.example.com)
 
 ## Problem
-
-Most people struggle with digital distractions, procrastination, and burnout caused by unstructured work sessions. Existing Pomodoro apps are overly simple, visually outdated, and missing habit-forming analytics or gamification.
+Many people struggle with digital distractions, procrastination, lack of time management systems, and burnout due to unstructured work. Existing Pomodoro apps are often overly simple, visually outdated, missing analytics and habit tracking, or lacking gamification.
 
 ## Solution
-
-FocusForge is a modern focus habit system that combines Pomodoro sessions, task management, productivity analytics, and gamification into a single premium mobile experience — all working 100% offline with zero cloud dependency.
+FocusForge combines a Pomodoro timer, task management, productivity analytics, and gamification into a modern mobile experience that helps users build consistent deep work habits. It acts as a comprehensive focus habit system.
 
 ## Why
-
-- **No login. No account. No data sent anywhere.** All data lives locally on your device.
-- Structured sessions build real deep-work habits.
-- Gamified rewards keep users motivated long-term.
-- Clean, modern dark UI reduces cognitive load during focus.
+FocusForge is not just a timer. It creates a powerful productivity loop by integrating Pomodoro sessions with task management, stats analytics, and a gamified progress/focus streak tracking system.
 
 ## Architecture
-
-- **Frontend**: Flutter (stable) + Dart + Riverpod state management + Material 3
-- **Storage**: 100% Offline — SQLite via sqflite (no Firebase, no internet required)
-- **Pattern**: Clean Architecture — Presentation / Domain / Data layers + MVVM + Repository
-- **Notifications**: Local notifications only (flutter_local_notifications)
-- **State**: Riverpod Notifier + StateNotifier providers
+- **Frontend Stack**: Flutter (stable), Dart, Riverpod state management, Material 3 UI.
+- **Backend Stack**: 100% Offline (SQLite / Local Storage) per legal agreement.
+- **Architecture Pattern**: Clean Architecture (Presentation, Domain, Data).
+- **Design Pattern**: MVVM + Repository pattern.
 
 ## What's Built
-
-| Feature | Status |
-|---|---|
-| Pomodoro Timer (focus / short break / long break) | ✅ Complete |
-| Concentration Mode (fullscreen, distraction-free) | ✅ Complete |
-| Task Management (create, edit, delete, filter by category) | ✅ Complete |
-| Pomodoro-to-Task Assignment | ✅ Complete |
-| Productivity Analytics (heatmap, weekly bar chart, metrics) | ✅ Complete |
-| Gamification (XP points, forge level, streak tracking) | ✅ Complete |
-| Achievements System | ✅ Complete |
-| Settings (timer durations, audio, haptic, power saving) | ✅ Complete |
-| Bilingual UI (English / Bahasa Indonesia) | ✅ Complete |
-| Onboarding Flow + Permission Priming | ✅ Complete |
-| Privacy Policy, Terms of Service, Data Usage Policy | ✅ Complete |
-| Dark Theme with dynamic color per timer mode | ✅ Complete |
+- **Pomodoro Timer**: Customizable durations (default 25m focus / 5m break).
+- **Task Management**: Create tasks, assign sessions, mark complete.
+- **Productivity Analytics**: Daily focus time, weekly graph, session history.
+- **Gamification**: Focus streaks, productivity points, achievement badges.
+- **User Profiles**: Productivity statistics, focus history.
 
 ## Team
-
-Built by the **nayrbryanGaming / Forge Team** — believers in deep work, extreme focus, and digital wellness.
+- Developed by nayrbryanGaming.
 
 ## Quick Start
-
 ```bash
 git clone https://github.com/nayrbryanGaming/focusforge-pomodoro.git
 cd focusforge-pomodoro/app
 flutter pub get
 flutter run
 ```
-
-> **Note**: No Firebase setup required. The app is fully offline. Test on a physical Android device for best results.
