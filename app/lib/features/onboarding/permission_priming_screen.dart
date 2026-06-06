@@ -18,13 +18,21 @@ class _PermissionPrimingScreenState extends ConsumerState<PermissionPrimingScree
   bool _isProcessing = false;
 
   Future<void> _handlePermissions() async {
+    if (_isProcessing) return;
     setState(() => _isProcessing = true);
-    
-    // Request notification permission
-    await ref.read(notificationServiceProvider).requestPermissions();
-    
-    if (mounted) {
-      widget.onComplete?.call();
+
+    try {
+      await ref
+          .read(notificationServiceProvider)
+          .requestPermissions()
+          .timeout(const Duration(seconds: 5));
+    } catch (_) {
+      // Permission request timed out or failed — proceed anyway
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+        widget.onComplete?.call();
+      }
     }
   }
 

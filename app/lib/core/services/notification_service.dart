@@ -48,25 +48,20 @@ class NotificationService {
   }
 
   Future<bool> checkPermission() async {
-    final status = await Permission.notification.isGranted;
-    if (Platform.isAndroid && status) {
-      // On Android 13+, notification is granted, but exact alarm might need separate checking
-      return await Permission.scheduleExactAlarm.isGranted;
-    }
-    return status;
+    return await Permission.notification.isGranted;
   }
 
   Future<bool> requestPermissions() async {
     if (Platform.isAndroid) {
-      // 1. Request Notification Permission (Android 13+)
       final status = await Permission.notification.request();
-      
-      // 2. Request Exact Alarm Permission (Android 12+)
-      if (status.isGranted) {
-        final exactStatus = await Permission.scheduleExactAlarm.request();
-        return exactStatus.isGranted;
-      }
       return status.isGranted;
+    }
+    return true;
+  }
+
+  Future<bool> canScheduleExactAlarms() async {
+    if (Platform.isAndroid) {
+      return await Permission.scheduleExactAlarm.isGranted;
     }
     return true;
   }
